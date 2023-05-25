@@ -1,0 +1,5 @@
+/system identity print
+/ip address print
+/system resource print
+/ip route print
+/ip service print
