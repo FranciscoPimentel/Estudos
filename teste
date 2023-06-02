@@ -1,0 +1,13 @@
+[haproxy]
+haproxy_1 ansible_host=10.41.5.10 ansible_user=infra ansible_connection=ssh ansible_ssh_private_key_file=~/.ssh/id_rsa
+haproxy_2 ansible_host=10.41.5.11 ansible_user=infra ansible_connection=ssh ansible_ssh_private_key_file=~/.ssh/id_rsa
+
+[controlplanes]
+controlplanes_1 ansible_host=10.41.5.20 ansible_user=infra ansible_connection=ssh ansible_ssh_private_key_file=~/.ssh/id_rsa
+controlplanes_2 ansible_host=10.41.5.21 ansible_user=infra ansible_connection=ssh ansible_ssh_private_key_file=~/.ssh/id_rsa
+
+[workers]
+worker_1 ansible_host=10.41.5.33 ansible_user=infra ansible_connection=ssh ansible_ssh_private_key_file=~/.ssh/id_rsa
+worker_2 ansible_host=10.41.5.34 ansible_user=infra ansible_connection=ssh ansible_ssh_private_key_file=~/.ssh/id_rsa
+worker_3 ansible_host=10.41.5.35 ansible_user=infra ansible_connection=ssh ansible_ssh_private_key_file=~/.ssh/id_rsa
+worker_4 ansible_host=10.41.5.36 ansible_user=infra ansible_connection=ssh ansible_ssh_private_key_file=~/.ssh/id_rsa

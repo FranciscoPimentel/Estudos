@@ -1,0 +1,11 @@
+- hosts: "{{ nodes }}" 
+  vars:
+    ip_virtual: "testes"
+  tasks:
+  - name: testes
+    template:
+     src: exmeplo_keep.j2
+     dest: /tmp/result.txt
+      
+
+#╰─ ansible-playbook -i ../../inventario/inventario_teste template_teste.yml --extra-vars="nodes=testes" -vvv                                                            ─╯

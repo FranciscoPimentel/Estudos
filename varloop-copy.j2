@@ -1,0 +1,15 @@
+{% for colour in colours %}
+  option httpchk GET /healthz HTTP/1.1\r\nHost:\ {{ loop.index }} is {{ colour.name }}.
+{% set colour_count = 0 %}
+{% for person in people if person.fav_colour == colour.name %}
+{% set colour_count = colour_count + 1 %}
+{% endfor %}
+  server {{ colour_count }} IP {{ colour.name }}:6443 check check-ssl verify none.
+  testestete {{ colour.name }}
+{% for item in colour.things %}
+    -server k8s_prod-master_1 {{ item }}:80 check
+{% endfor %}
+
+{% endfor %}
+
+

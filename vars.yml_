@@ -1,0 +1,34 @@
+---
+  people:
+    - name: Mike
+      fav_server: Blue
+    - name: Kyle
+      fav_server: Yellow
+    - name: Shea
+      fav_server: Blue
+    - name: Aly
+      fav_server: Yellow
+    - name: Daniyal
+      fav_server: Yellow
+    - name: Tim
+      fav_server: Orange
+
+  servers:
+    - name: Blue
+      things:
+        - Sky
+        - Sea
+        - Jeans
+    - name: Yellow
+      things:
+        - Egg yolk
+        - Taxi
+        - Banana
+        - Lemon
+        - Sun
+    - name: Orange
+      things:
+        - Pumpkin
+        - Basketball
+        - Carrots
+        - Oranges
