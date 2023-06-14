@@ -1,0 +1,592 @@
+{
+	"environment_name": "tst",
+	"ansible_user": "infra",
+	"ansible_ssh_private_key_file": "/home/francisco/.ssh/id_rsa_qa/id_qa_rsa",
+	"ansible_python_interpreter": "/usr/bin/python3",
+	"ansible_connection": "local",
+	"inventory_hostname": "localhost",
+	"inventory_hostname_short": "localhost",
+	"group_names": [],
+	"ansible_facts": {},
+	"playbook_dir": "/media/jose/midia/GIT/TCP/Ansible-K8s/exemplos",
+	"ansible_playbook_python": "/usr/bin/python3",
+	"ansible_config_file": "/etc/ansible/ansible.cfg",
+	"ansible_role_names": [],
+	"ansible_play_role_names": [],
+	"ansible_dependent_role_names": [],
+	"role_names": [],
+	"ansible_play_name": "Demonstrating variables in Jinja2 Loops",
+	"groups": {
+		"all": [
+			"haproxy-1",
+			"haproxy-2",
+			"controlplane-1",
+			"controlplane-2",
+			"worker-1",
+			"worker-2",
+			"worker-3"
+		],
+		"ungrouped": [],
+		"haproxy": [
+			"haproxy-1",
+			"haproxy-2"
+		],
+		"controlplanes": [
+			"controlplane-1",
+			"controlplane-2"
+		],
+		"workers": [
+			"worker-1",
+			"worker-2",
+			"worker-3"
+		],
+		"kubernetes": [
+			"controlplane-1",
+			"controlplane-2",
+			"worker-1",
+			"worker-2",
+			"worker-3"
+		]
+	},
+	"ansible_play_hosts_all": [
+		"localhost"
+	],
+	"ansible_play_hosts": [
+		"localhost"
+	],
+	"ansible_play_batch": [
+		"localhost"
+	],
+	"play_hosts": [
+		"localhost"
+	],
+	"omit": "__omit_place_holder__f556c9b54f2342029b558a6563e0b89a3112fea0",
+	"ansible_version": {
+		"string": "2.10.8",
+		"full": "2.10.8",
+		"major": 2,
+		"minor": 10,
+		"revision": 8
+	},
+	"ansible_check_mode": false,
+	"ansible_diff_mode": false,
+	"ansible_forks": 5,
+	"ansible_inventory_sources": "/media/jose/midia/GIT/TCP/Ansible-K8s/inventario/invet_teste.yml",
+	"ansible_skip_tags": "",
+	"ansible_run_tags": "all",
+	"ansible_verbosity": 3,
+	"hostvars": {
+		"haproxy-1": {
+			"environment_name": "tst",
+			"ansible_user": "infra",
+			"ansible_ssh_private_key_file": "/home/francisco/.ssh/id_rsa_qa/id_qa_rsa",
+			"ip_virtual": "126.126.126.126",
+			"port_k8s": 6443,
+			"port_http": 80,
+			"port_https": 443,
+			"port_stats_haproxy": 1936,
+			"inventory_file": "/media/jose/midia/GIT/TCP/Ansible-K8s/inventario/invet_teste.yml",
+			"inventory_dir": "/media/jose/midia/GIT/TCP/Ansible-K8s/inventario",
+			"ansible_host": "10.41.13.72",
+			"inventory_hostname": "haproxy-1",
+			"inventory_hostname_short": "haproxy-1",
+			"group_names": [
+				"haproxy"
+			],
+			"ansible_facts": {},
+			"playbook_dir": "/media/jose/midia/GIT/TCP/Ansible-K8s/exemplos",
+			"ansible_playbook_python": "/usr/bin/python3",
+			"ansible_config_file": "/etc/ansible/ansible.cfg",
+			"groups": {
+				"all": [
+					"haproxy-1",
+					"haproxy-2",
+					"controlplane-1",
+					"controlplane-2",
+					"worker-1",
+					"worker-2",
+					"worker-3"
+				],
+				"ungrouped": [],
+				"haproxy": [
+					"haproxy-1",
+					"haproxy-2"
+				],
+				"controlplanes": [
+					"controlplane-1",
+					"controlplane-2"
+				],
+				"workers": [
+					"worker-1",
+					"worker-2",
+					"worker-3"
+				],
+				"kubernetes": [
+					"controlplane-1",
+					"controlplane-2",
+					"worker-1",
+					"worker-2",
+					"worker-3"
+				]
+			},
+			"omit": "__omit_place_holder__f556c9b54f2342029b558a6563e0b89a3112fea0",
+			"ansible_version": {
+				"string": "2.10.8",
+				"full": "2.10.8",
+				"major": 2,
+				"minor": 10,
+				"revision": 8
+			},
+			"ansible_check_mode": false,
+			"ansible_diff_mode": false,
+			"ansible_forks": 5,
+			"ansible_inventory_sources": [
+				"/media/jose/midia/GIT/TCP/Ansible-K8s/inventario/invet_teste.yml"
+			],
+			"ansible_skip_tags": [],
+			"ansible_run_tags": [
+				"all"
+			],
+			"ansible_verbosity": 3
+		},
+		"haproxy-2": {
+			"environment_name": "tst",
+			"ansible_user": "infra",
+			"ansible_ssh_private_key_file": "/home/francisco/.ssh/id_rsa_qa/id_qa_rsa",
+			"ip_virtual": "126.126.126.126",
+			"port_k8s": 6443,
+			"port_http": 80,
+			"port_https": 443,
+			"port_stats_haproxy": 1936,
+			"inventory_file": "/media/jose/midia/GIT/TCP/Ansible-K8s/inventario/invet_teste.yml",
+			"inventory_dir": "/media/jose/midia/GIT/TCP/Ansible-K8s/inventario",
+			"ansible_host": "10.41.13.73",
+			"inventory_hostname": "haproxy-2",
+			"inventory_hostname_short": "haproxy-2",
+			"group_names": [
+				"haproxy"
+			],
+			"ansible_facts": {},
+			"playbook_dir": "/media/jose/midia/GIT/TCP/Ansible-K8s/exemplos",
+			"ansible_playbook_python": "/usr/bin/python3",
+			"ansible_config_file": "/etc/ansible/ansible.cfg",
+			"groups": {
+				"all": [
+					"haproxy-1",
+					"haproxy-2",
+					"controlplane-1",
+					"controlplane-2",
+					"worker-1",
+					"worker-2",
+					"worker-3"
+				],
+				"ungrouped": [],
+				"haproxy": [
+					"haproxy-1",
+					"haproxy-2"
+				],
+				"controlplanes": [
+					"controlplane-1",
+					"controlplane-2"
+				],
+				"workers": [
+					"worker-1",
+					"worker-2",
+					"worker-3"
+				],
+				"kubernetes": [
+					"controlplane-1",
+					"controlplane-2",
+					"worker-1",
+					"worker-2",
+					"worker-3"
+				]
+			},
+			"omit": "__omit_place_holder__f556c9b54f2342029b558a6563e0b89a3112fea0",
+			"ansible_version": {
+				"string": "2.10.8",
+				"full": "2.10.8",
+				"major": 2,
+				"minor": 10,
+				"revision": 8
+			},
+			"ansible_check_mode": false,
+			"ansible_diff_mode": false,
+			"ansible_forks": 5,
+			"ansible_inventory_sources": [
+				"/media/jose/midia/GIT/TCP/Ansible-K8s/inventario/invet_teste.yml"
+			],
+			"ansible_skip_tags": [],
+			"ansible_run_tags": [
+				"all"
+			],
+			"ansible_verbosity": 3
+		},
+		"controlplane-1": {
+			"environment_name": "tst",
+			"ansible_user": "infra",
+			"ansible_ssh_private_key_file": "/home/francisco/.ssh/id_rsa_qa/id_qa_rsa",
+			"inventory_file": "/media/jose/midia/GIT/TCP/Ansible-K8s/inventario/invet_teste.yml",
+			"inventory_dir": "/media/jose/midia/GIT/TCP/Ansible-K8s/inventario",
+			"ansible_host": "199.199.199.199",
+			"inventory_hostname": "controlplane-1",
+			"inventory_hostname_short": "controlplane-1",
+			"group_names": [
+				"controlplanes",
+				"kubernetes"
+			],
+			"ansible_facts": {},
+			"playbook_dir": "/media/jose/midia/GIT/TCP/Ansible-K8s/exemplos",
+			"ansible_playbook_python": "/usr/bin/python3",
+			"ansible_config_file": "/etc/ansible/ansible.cfg",
+			"groups": {
+				"all": [
+					"haproxy-1",
+					"haproxy-2",
+					"controlplane-1",
+					"controlplane-2",
+					"worker-1",
+					"worker-2",
+					"worker-3"
+				],
+				"ungrouped": [],
+				"haproxy": [
+					"haproxy-1",
+					"haproxy-2"
+				],
+				"controlplanes": [
+					"controlplane-1",
+					"controlplane-2"
+				],
+				"workers": [
+					"worker-1",
+					"worker-2",
+					"worker-3"
+				],
+				"kubernetes": [
+					"controlplane-1",
+					"controlplane-2",
+					"worker-1",
+					"worker-2",
+					"worker-3"
+				]
+			},
+			"omit": "__omit_place_holder__f556c9b54f2342029b558a6563e0b89a3112fea0",
+			"ansible_version": {
+				"string": "2.10.8",
+				"full": "2.10.8",
+				"major": 2,
+				"minor": 10,
+				"revision": 8
+			},
+			"ansible_check_mode": false,
+			"ansible_diff_mode": false,
+			"ansible_forks": 5,
+			"ansible_inventory_sources": [
+				"/media/jose/midia/GIT/TCP/Ansible-K8s/inventario/invet_teste.yml"
+			],
+			"ansible_skip_tags": [],
+			"ansible_run_tags": [
+				"all"
+			],
+			"ansible_verbosity": 3
+		},
+		"controlplane-2": {
+			"environment_name": "tst",
+			"ansible_user": "infra",
+			"ansible_ssh_private_key_file": "/home/francisco/.ssh/id_rsa_qa/id_qa_rsa",
+			"inventory_file": "/media/jose/midia/GIT/TCP/Ansible-K8s/inventario/invet_teste.yml",
+			"inventory_dir": "/media/jose/midia/GIT/TCP/Ansible-K8s/inventario",
+			"ansible_host": "199.199.199.199",
+			"vars": {
+				"k8s_users": "None",
+				"group": {
+					"devops-admins": [
+						"joaon",
+						"josep",
+						"myano"
+					],
+					"devops-deploy": [
+						"devops-deploy-azure"
+					],
+					"itsm-support": [
+						"salvaro"
+					],
+					"devops-readonly": [
+						"dev"
+					]
+				}
+			},
+			"enable_ingress": true,
+			"inventory_hostname": "controlplane-2",
+			"inventory_hostname_short": "controlplane-2",
+			"group_names": [
+				"controlplanes",
+				"kubernetes"
+			],
+			"ansible_facts": {},
+			"playbook_dir": "/media/jose/midia/GIT/TCP/Ansible-K8s/exemplos",
+			"ansible_playbook_python": "/usr/bin/python3",
+			"ansible_config_file": "/etc/ansible/ansible.cfg",
+			"groups": {
+				"all": [
+					"haproxy-1",
+					"haproxy-2",
+					"controlplane-1",
+					"controlplane-2",
+					"worker-1",
+					"worker-2",
+					"worker-3"
+				],
+				"ungrouped": [],
+				"haproxy": [
+					"haproxy-1",
+					"haproxy-2"
+				],
+				"controlplanes": [
+					"controlplane-1",
+					"controlplane-2"
+				],
+				"workers": [
+					"worker-1",
+					"worker-2",
+					"worker-3"
+				],
+				"kubernetes": [
+					"controlplane-1",
+					"controlplane-2",
+					"worker-1",
+					"worker-2",
+					"worker-3"
+				]
+			},
+			"omit": "__omit_place_holder__f556c9b54f2342029b558a6563e0b89a3112fea0",
+			"ansible_version": {
+				"string": "2.10.8",
+				"full": "2.10.8",
+				"major": 2,
+				"minor": 10,
+				"revision": 8
+			},
+			"ansible_check_mode": false,
+			"ansible_diff_mode": false,
+			"ansible_forks": 5,
+			"ansible_inventory_sources": [
+				"/media/jose/midia/GIT/TCP/Ansible-K8s/inventario/invet_teste.yml"
+			],
+			"ansible_skip_tags": [],
+			"ansible_run_tags": [
+				"all"
+			],
+			"ansible_verbosity": 3
+		},
+		"worker-1": {
+			"environment_name": "tst",
+			"ansible_user": "infra",
+			"ansible_ssh_private_key_file": "/home/francisco/.ssh/id_rsa_qa/id_qa_rsa",
+			"inventory_file": "/media/jose/midia/GIT/TCP/Ansible-K8s/inventario/invet_teste.yml",
+			"inventory_dir": "/media/jose/midia/GIT/TCP/Ansible-K8s/inventario",
+			"ansible_host": "10.41.13.214",
+			"inventory_hostname": "worker-1",
+			"inventory_hostname_short": "worker-1",
+			"group_names": [
+				"kubernetes",
+				"workers"
+			],
+			"ansible_facts": {},
+			"playbook_dir": "/media/jose/midia/GIT/TCP/Ansible-K8s/exemplos",
+			"ansible_playbook_python": "/usr/bin/python3",
+			"ansible_config_file": "/etc/ansible/ansible.cfg",
+			"groups": {
+				"all": [
+					"haproxy-1",
+					"haproxy-2",
+					"controlplane-1",
+					"controlplane-2",
+					"worker-1",
+					"worker-2",
+					"worker-3"
+				],
+				"ungrouped": [],
+				"haproxy": [
+					"haproxy-1",
+					"haproxy-2"
+				],
+				"controlplanes": [
+					"controlplane-1",
+					"controlplane-2"
+				],
+				"workers": [
+					"worker-1",
+					"worker-2",
+					"worker-3"
+				],
+				"kubernetes": [
+					"controlplane-1",
+					"controlplane-2",
+					"worker-1",
+					"worker-2",
+					"worker-3"
+				]
+			},
+			"omit": "__omit_place_holder__f556c9b54f2342029b558a6563e0b89a3112fea0",
+			"ansible_version": {
+				"string": "2.10.8",
+				"full": "2.10.8",
+				"major": 2,
+				"minor": 10,
+				"revision": 8
+			},
+			"ansible_check_mode": false,
+			"ansible_diff_mode": false,
+			"ansible_forks": 5,
+			"ansible_inventory_sources": [
+				"/media/jose/midia/GIT/TCP/Ansible-K8s/inventario/invet_teste.yml"
+			],
+			"ansible_skip_tags": [],
+			"ansible_run_tags": [
+				"all"
+			],
+			"ansible_verbosity": 3
+		},
+		"worker-2": {
+			"environment_name": "tst",
+			"ansible_user": "infra",
+			"ansible_ssh_private_key_file": "/home/francisco/.ssh/id_rsa_qa/id_qa_rsa",
+			"inventory_file": "/media/jose/midia/GIT/TCP/Ansible-K8s/inventario/invet_teste.yml",
+			"inventory_dir": "/media/jose/midia/GIT/TCP/Ansible-K8s/inventario",
+			"ansible_host": "10.41.13.215",
+			"inventory_hostname": "worker-2",
+			"inventory_hostname_short": "worker-2",
+			"group_names": [
+				"kubernetes",
+				"workers"
+			],
+			"ansible_facts": {},
+			"playbook_dir": "/media/jose/midia/GIT/TCP/Ansible-K8s/exemplos",
+			"ansible_playbook_python": "/usr/bin/python3",
+			"ansible_config_file": "/etc/ansible/ansible.cfg",
+			"groups": {
+				"all": [
+					"haproxy-1",
+					"haproxy-2",
+					"controlplane-1",
+					"controlplane-2",
+					"worker-1",
+					"worker-2",
+					"worker-3"
+				],
+				"ungrouped": [],
+				"haproxy": [
+					"haproxy-1",
+					"haproxy-2"
+				],
+				"controlplanes": [
+					"controlplane-1",
+					"controlplane-2"
+				],
+				"workers": [
+					"worker-1",
+					"worker-2",
+					"worker-3"
+				],
+				"kubernetes": [
+					"controlplane-1",
+					"controlplane-2",
+					"worker-1",
+					"worker-2",
+					"worker-3"
+				]
+			},
+			"omit": "__omit_place_holder__f556c9b54f2342029b558a6563e0b89a3112fea0",
+			"ansible_version": {
+				"string": "2.10.8",
+				"full": "2.10.8",
+				"major": 2,
+				"minor": 10,
+				"revision": 8
+			},
+			"ansible_check_mode": false,
+			"ansible_diff_mode": false,
+			"ansible_forks": 5,
+			"ansible_inventory_sources": [
+				"/media/jose/midia/GIT/TCP/Ansible-K8s/inventario/invet_teste.yml"
+			],
+			"ansible_skip_tags": [],
+			"ansible_run_tags": [
+				"all"
+			],
+			"ansible_verbosity": 3
+		},
+		"worker-3": {
+			"environment_name": "tst",
+			"ansible_user": "infra",
+			"ansible_ssh_private_key_file": "/home/francisco/.ssh/id_rsa_qa/id_qa_rsa",
+			"inventory_file": "/media/jose/midia/GIT/TCP/Ansible-K8s/inventario/invet_teste.yml",
+			"inventory_dir": "/media/jose/midia/GIT/TCP/Ansible-K8s/inventario",
+			"ansible_host": "10.41.13.216",
+			"inventory_hostname": "worker-3",
+			"inventory_hostname_short": "worker-3",
+			"group_names": [
+				"kubernetes",
+				"workers"
+			],
+			"ansible_facts": {},
+			"playbook_dir": "/media/jose/midia/GIT/TCP/Ansible-K8s/exemplos",
+			"ansible_playbook_python": "/usr/bin/python3",
+			"ansible_config_file": "/etc/ansible/ansible.cfg",
+			"groups": {
+				"all": [
+					"haproxy-1",
+					"haproxy-2",
+					"controlplane-1",
+					"controlplane-2",
+					"worker-1",
+					"worker-2",
+					"worker-3"
+				],
+				"ungrouped": [],
+				"haproxy": [
+					"haproxy-1",
+					"haproxy-2"
+				],
+				"controlplanes": [
+					"controlplane-1",
+					"controlplane-2"
+				],
+				"workers": [
+					"worker-1",
+					"worker-2",
+					"worker-3"
+				],
+				"kubernetes": [
+					"controlplane-1",
+					"controlplane-2",
+					"worker-1",
+					"worker-2",
+					"worker-3"
+				]
+			},
+			"omit": "__omit_place_holder__f556c9b54f2342029b558a6563e0b89a3112fea0",
+			"ansible_version": {
+				"string": "2.10.8",
+				"full": "2.10.8",
+				"major": 2,
+				"minor": 10,
+				"revision": 8
+			},
+			"ansible_check_mode": false,
+			"ansible_diff_mode": false,
+			"ansible_forks": 5,
+			"ansible_inventory_sources": [
+				"/media/jose/midia/GIT/TCP/Ansible-K8s/inventario/invet_teste.yml"
+			],
+			"ansible_skip_tags": [],
+			"ansible_run_tags": [
+				"all"
+			],
+			"ansible_verbosity": 3
+		}
+	},
+	"environment": []
+}

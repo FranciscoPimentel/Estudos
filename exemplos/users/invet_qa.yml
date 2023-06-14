@@ -1,0 +1,118 @@
+# Invetário refernte ao ambinte QA
+running_localhost:
+  hosts:
+    localhost:
+  vars:
+    rbac_groups:
+      devops-admins:
+        - joaon
+        - josep
+        - myano
+      devops-deploy:
+        - devops-deploy-azure
+      devops-suport:
+        - miguel
+        - salvaro           
+      devops-readonly:
+        - dev
+
+## HAPROXY
+haproxy:
+  hosts:
+    haproxy_qa-1:
+      ansible_host: 10.41.12.118 #vhlnx6012
+    haproxy_qa-2:
+      ansible_host: 10.41.12.119 #vhlnx6013
+  vars:          
+    ansible_user: infra
+    ansible_ssh_private_key_file: /home/francisco/.ssh/id_rsa_qa/id_qa_rsa      
+    ip_virtual: 10.41.12.29
+    port_k8s: 6443
+    port_http: 80
+    port_https: 443
+    port_stats_haproxy: 1936
+# KUBERNETES 
+## Controlplanes
+controlplanes:
+  hosts:
+    ctrplane-qa-1:
+      ansible_host: 10.41.12.107 
+    ctrplane-qa-2:
+      ansible_host: 10.41.12.108
+    ctrplane-qa-3:
+      ansible_host: 10.41.12.109    
+  vars:
+    ansible_user: infra
+    ansible_ssh_private_key_file: /home/francisco/.ssh/id_rsa_qa/id_qa_rsa
+    enable_ingress: true #exemplo
+## Workers         
+workers:
+  hosts:
+    worker-qa-1:
+      ansible_host: 10.41.12.110
+    worker-qa-2:
+      ansible_host: 10.41.12.111
+    worker-qa-3:
+      ansible_host: 10.41.12.112
+    worker-qa-4:
+      ansible_host: 10.41.12.113
+    worker-qa-5:
+      ansible_host: 10.41.12.114
+    worker-qa-6:
+      ansible_host: 10.41.12.115
+    worker-qa-7:
+      ansible_host: 10.41.12.116
+    worker-qa-8:
+      ansible_host: 10.41.12.117            
+  vars:
+    ansible_user: infra
+    ansible_ssh_private_key_file: /home/francisco/.ssh/id_rsa_qa/id_qa_rsa
+
+opensearch:
+  hosts:
+    opensearch-1:
+      ansible_host: 10.41.12.72 
+  vars:
+    ansible_user: infra
+    ansible_ssh_private_key_file: /home/francisco/.ssh/id_rsa_qa/id_qa_rsa
+
+mongodb:
+  hosts:
+    mongodb-1:
+      ansible_host: 10.41.12.135 
+    mongodb-2:
+      ansible_host: 10.41.12.136
+    mongodb-3:
+      ansible_host: 10.41.12.137    
+  vars:
+    ansible_user: infra
+    ansible_ssh_private_key_file: /home/francisco/.ssh/id_rsa_qa/id_qa_rsa
+    enable_ingress: true #exemplo
+
+rabbitmq:
+  hosts:
+    rabbitmq-1:
+      ansible_host: 10.41.12.132  
+    rabbitmq-2:
+      ansible_host: 10.41.12.133
+    rabbitmq-3:
+      ansible_host: 10.41.12.134    
+  vars:
+    ansible_user: infra
+    ansible_ssh_private_key_file: /home/francisco/.ssh/id_rsa_qa/id_qa_rsa
+    enable_ingress: true #exemplo
+
+kubernetes:
+  children:
+    controlplanes:
+    workers:
+all:
+  vars:
+    environment_name: qa
+  children:
+    kubernetes:
+    haproxy:
+    opensearch:
+    mongodb:
+    rabbitmq:
+

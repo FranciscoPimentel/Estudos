@@ -1,0 +1,63 @@
+#- hosts: localhost
+#  become: no
+#  gather_facts: false
+#  connection: local
+#  
+#  tasks:
+#  - name: Definir items para loop
+#    ansible.builtin.set_fact:
+#      rbac_user_groups: "{{ rbac_groups | dict2items | subelements('value') }}"
+#      # user_name: item.1
+#      # group_name: item.0.key
+#
+#  - name: Check folder
+#    ansible.builtin.stat:
+#      path: "./certs-gen/{{ item.0.key }}/{{ item.1 }}"
+#    register: "{{ item.0.key }}-{{ item.1 }}_stat"
+#
+#  - name: find several related variables
+#    debug: msg=" ./certs-gen/{{ item.0.key }}/{{ item.1 }}"
+#    loop: "{{ rbac_user_groups }}"
+#    when: not {{ item.0.key }}-{{ item.1 }}_stat.exists
+#  - name: Run with items greater than 5
+#    ansible.builtin.command: echo {{ item }}
+#    loop: [ 0, 2, 4, 6, 8, 10 ]
+#    when: item > 5
+
+- name: "Gerando private.key"
+  hosts: localhost
+  become: no
+  connection: local
+  tasks:
+
+  - name: Definir items para loop
+    ansible.builtin.set_fact:
+      rbac_user_groups: "{{ rbac_groups | dict2items | subelements('value') }}"
+
+## => Gerando certificados para o usuário <=
+
+  - name: Check if file already exists
+    command: ls -la ./certs-gen/{{ environment_name }}/{{ item.0.key }}/{{ item.1 }}/{{ item.1 }}.txt
+    loop: "{{ rbac_user_groups }}"
+    register: file_exists
+    ignore_errors: yes
+
+  - name: create arquive for user
+    file:
+      path: ./certs-gen/{{ environment_name }}/{{ item.0.key }}/{{ item.1 }}
+      state:  directory 
+    loop: "{{ rbac_user_groups }}"  
+    when: file_exists is failed
+
+  - name: create file for user
+    file:
+      path: ./certs-gen/{{ environment_name }}/{{ item.0.key }}/{{ item.1 }}/{{ item.1 }}.txt
+      state:  touch
+    loop: "{{ rbac_user_groups }}"  
+    when: file_exists is failed
+
+  - name: show message if file exists
+    debug:
+     msg: The user file already exists.
+    loop: "{{ rbac_user_groups }}"
+    when: file_exists is succeeded

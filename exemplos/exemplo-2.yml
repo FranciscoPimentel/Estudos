@@ -1,0 +1,10 @@
+  - name: Demonstrating variables in Jinja2 Loops
+    hosts: localhost
+    connection: local
+
+    gather_facts: no
+    tasks:
+      - name: Create the Jinja2 based template
+        template: src=./cluster_role_binding-template.j2 dest=/tmp/output.yml
+
+        

@@ -1,0 +1,15 @@
+
+PLAY [Gerando private.key] *****************************************************
+
+TASK [Gathering Facts] *********************************************************
+ok: [localhost]
+
+TASK [Definir items para loop] *************************************************
+ok: [localhost]
+
+TASK [Check directors] *********************************************************
+fatal: [localhost]: FAILED! => {"msg": "The conditional check 'not {{ environment_name }}/{{ item.0.key }}/{{ item.1 }}' failed. The error was: error while evaluating conditional (not {{ environment_name }}/{{ item.0.key }}/{{ item.1 }}): 'qa' is undefined\n\nThe error appears to be in '/media/jose/midia/GIT/TCP/Ansible-K8s/exemplos/teste.yml': line 37, column 5, but may\nbe elsewhere in the file depending on the exact syntax problem.\n\nThe offending line appears to be:\n\n\n  - name: Check directors\n    ^ here\n"}
+
+PLAY RECAP *********************************************************************
+localhost                  : ok=2    changed=0    unreachable=0    failed=1    skipped=0    rescued=0    ignored=0   
+

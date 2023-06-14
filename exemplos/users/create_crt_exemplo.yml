@@ -1,0 +1,41 @@
+- name: "Gerando private.key"
+  hosts: localhost
+  connection: local
+  tasks:
+## => Gerando certifiates para o usuário <=
+  - name: 1 - Create diretório certs
+    shell: mkdir -p ./environment/{{ environment_name }}certs/{{ user }} 
+#
+#  - name: 1 - Create private key (RSA, 4096 bits) {{ user }}
+#    community.crypto.openssl_privatekey:
+#      path: ./certs/{{ user }}/{{ user }}-deployrole.key
+
+#  - name: 1.2 - Generate .CSR {{ user }}
+#    command: openssl req -new -key ./certs/{{ user }}/{{ user }}-deployrole.key -out ./certs/{{ user }}/{{ user }}-deployrole.csr -subj "/CN={{ user }}/O=devops:admins"
+
+#  - name: 1.3 - Convert CSR para base64
+#    shell: cat ./certs/{{ user }}/{{ user }}-deployrole.csr | base64 | tr -d "\n" > ./certs/{{ user }}/{{ user }}-base64-csr.txt
+#    register: "output"
+#  - debug: var=output.stdout_lines
+
+#  - name: 1.4 - Configuração YML {{ user }}
+#    shell: |
+#            base64_CSR=$(cat ./certs/{{ user }}/{{ user }}-base64-csr.txt)
+#            helm template ./helm-user --debug --set userName={{ user }} --set defaultRole={{ defaultRole }} --set base64CSR=$base64_CSR > ./certs/{{ user }}/{{ user }}-certificate.yml
+
+
+- name: Registered variable usage as a loop list
+  hosts: all
+  tasks:
+
+    - name: Retrieve the list of home directories
+      ansible.builtin.command: ls /home
+      register: home_dirs
+
+    - name: Add home dirs to the backup spooler
+      ansible.builtin.file:
+        path: /mnt/bkspool/{{ item }}
+        src: /home/{{ item }}
+        state: link
+      loop: "{{ home_dirs.stdout_lines }}"
+      # same as loop: "{{ home_dirs.stdout.split() }}"

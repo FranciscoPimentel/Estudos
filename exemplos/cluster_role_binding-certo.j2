@@ -1,0 +1,30 @@
+--HOSTVARS -----------------------------------------------
+{% for groupname in hostvars["running-machine"]["user_groups"] %}
+ name {{ groupname }}
+ {% for username in hostvars["running-machine"]["user_groups"][groupname] %}
+   -> {{ username }}
+ {% endfor %}
+{% endfor %}
+{% for groupname in hostvars["running-machine"]["user_groups"] %}
+ name {{ groupname }}
+ {% endfor %}
+
+{{ groups | to_nice_json }}
+{{ hostvars | to_nice_json }}
+
+# Source: helm-admin/templates/02-cluster-role-binding.yaml
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: devops-admins
+subjects: 
+  - kind: User
+    name: xxxxx
+    apiGroup: rbac.authorization.k8s.io    
+  - kind: User
+    name: bala-prata
+    apiGroup: rbac.authorization.k8s.io
+roleRef:
+    kind: ClusterRole
+    name: devops-admins
+    apiGroup: rbac.authorization.k8s.io
