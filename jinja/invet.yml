@@ -1,0 +1,79 @@
+# Invetário refernte ao ambinte TESTES
+running_localhost:
+  hosts:
+    localhost:
+  vars:
+    rbac_groups:
+      devops-admins:
+        - joaon
+        - josep
+        - myano
+      devops-deploy:
+        - devops-deploy-azure
+      devops-support:
+        - miguel
+        - salvaro           
+      devops-readonly:
+         - dev
+# Servers HAPROXY         
+haproxy:
+  hosts:
+    haproxy_prod_worker-1:
+      ansible_host: 10.41.5.10 
+    haproxy_prod_worker-2:
+      ansible_host: 10.41.5.11     
+  vars:          
+
+    port_k8s: 6443
+    port_http: 80
+    port_https: 443
+    port_stats_haproxy: 1936
+
+kubernetes:
+  children:
+    haproxy:
+
+all:
+  vars:
+# Variáveis globais 
+    ansible_user: infra
+    ansible_ssh_private_key_file: /home/jose/.ssh/id_rsa
+# Variáveis de ambiente (environment)
+    dns_server: 
+    - 10.41.12.10      
+    environment_name: teste
+    cluster_name: qa_config    
+    ip_virtual: 10.41.5.12
+    network_pod: 10.244.0.0/16
+# Versões usadas 
+    versions:
+      versionK8s: 1.27.2-00
+      runc_version: v1.1.6
+      conteinerd_version: v1.7.1
+      container_netwok_version: v1.3.0 
+## Variáveis de storage
+    storageclass:    
+      nfs_server: vhnfs01.tcp.com.br
+      nfs_path: /data
+      name_storage: nfs
+
+  children:
+    kubernetes:
+    haproxy:
+    running_localhost:
+
+
+
+
+
+#[controlplane]
+#control_plane ansible_host=10.41.13.212 ansible_user=infra ansible_connection=ssh ansible_ssh_private_key_file=/home/francisco/.ssh/id_rsa
+#control_plane_2 ansible_host=10.41.13.75 ansible_user=infra ansible_connection=ssh ansible_ssh_private_key_file=/home/francisco/.ssh/id_rsa
+
+#[workers]
+#worker ansible_host=10.41.13.214 ansible_user=infra ansible_connection=ssh ansible_ssh_private_key_file=/home/francisco/.ssh/id_rsa
+
+
+#[all:vars]
+#ansible_python_interpreter=/usr/bin/python3
+

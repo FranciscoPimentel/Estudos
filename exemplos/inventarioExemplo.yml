@@ -1,0 +1,63 @@
+running_localhost:
+  hosts:
+    running-machine:
+      ansible_host: localhost
+  vars:
+    user_groups:
+      devops-admins:
+        - joaon
+        - josep
+        - myano
+        - salvaro        
+      devops-deploy:
+        - devops-deploy-azure
+      devops-suport:
+        - miguel
+        - salvaro            
+      devops-readonly:
+        - dev
+
+haproxy:
+  hosts:
+    haproxy-1:
+      ansible_host: 10.41.13.72 
+    haproxy-2:
+      ansible_host: 10.41.13.73
+  vars:          
+    ip_virtual: 126.126.126.126
+    port_k8s: 6443
+    port_http: 80
+    port_https: 443
+    port_stats_haproxy: 1936
+controlplanes:
+  hosts:
+    controlplane-1:
+      ansible_host: 199.199.199.199
+    controlplane-2:
+      ansible_host: 199.199.199.199
+workers:
+  hosts:
+    worker-1:
+      ansible_host: 10.41.13.214
+    worker-2:
+      ansible_host: 10.41.13.215
+    worker-3:
+      ansible_host: 10.41.13.216
+
+kubernetes:
+  children:
+    controlplanes:
+    workers:
+
+all:
+  vars:
+    environment_name: tst
+    ansible_user: infra
+    ansible_ssh_private_key_file: /home/francisco/.ssh/id_rsa_qa/id_qa_rsa
+
+
+  children:
+    kubernetes:
+    haproxy:
+    running_localhost:
+
