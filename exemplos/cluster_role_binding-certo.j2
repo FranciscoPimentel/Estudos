@@ -12,6 +12,15 @@
 {{ groups | to_nice_json }}
 {{ hostvars | to_nice_json }}
 
+{% for host in groups['haproxy'] %} 
+{% if ansible_default_ipv4['address'] != hostvars[host]['ansible_host']  %} 
+   {{ hostvars[host]['ansible_host'] }}   # The IP address of peer machines
+{% endif %}   
+{% endfor %} 
+
+
+
+
 # Source: helm-admin/templates/02-cluster-role-binding.yaml
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
@@ -28,3 +37,7 @@ roleRef:
     kind: ClusterRole
     name: devops-admins
     apiGroup: rbac.authorization.k8s.io
+
+    https://github.com/containerd/containerd/releases/download/v1.7.2/containerd-1.7.2-linux-amd64.tar.gz
+
+    https://github.com/containernetworking/plugins/releases/download/v1.3.0/cni-plugins-linux-amd64-v1.3.0.tgz

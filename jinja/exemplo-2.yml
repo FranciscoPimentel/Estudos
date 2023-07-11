@@ -3,5 +3,5 @@
   tasks:
   - name: write hostname using jinja2
     ansible.builtin.template:
-       src: facts.j2
+       src: coredns_custom.j2
        dest: /tmp/keepalived.conf
