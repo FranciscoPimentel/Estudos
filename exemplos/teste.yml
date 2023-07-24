@@ -61,3 +61,34 @@
      msg: The user file already exists.
     loop: "{{ rbac_user_groups }}"
     when: file_exists is succeeded
+---    
+- name: "Gerando private.key"
+  hosts: localhost
+  become: no
+  connection: local
+  tasks:
+
+  - name: Definir items para loop
+    ansible.builtin.set_fact:
+      rbac_user_groups: "{{ rbac_groups | dict2items | subelements('value') }}"
+
+## => Gerando certificados para o usuário <=
+
+  - name: Check if file already exists
+    command: ls /media/jose/midia/GIT/TCP/certs-gen/{{ environment_name }}/{{ item.0.key }}/{{ item.1 }}/{{ item.1 }}.txt
+    loop: "{{ rbac_user_groups }}"
+    register: file_exists
+    ignore_errors: yes
+
+  - name: Create a directory if it does not exist
+    file:
+      path: /media/jose/midia/GIT/TCP/certs-gen/{{ environment_name }}/{{ item.0.key }}/{{ item.1 }}/{{ item.1 }}.txt
+      state: touch 
+    loop: "{{ rbac_user_groups }}"     
+    when: file_exists is failed
+
+  - name: show message if file exists
+    debug:
+     msg: The user file already exists.
+    loop: "{{ rbac_user_groups }}"
+    when: file_exists is succeeded

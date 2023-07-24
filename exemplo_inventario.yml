@@ -1,0 +1,149 @@
+
+# Invetário refernte ao ambinte TESTES
+running_localhost:
+  hosts:
+    localhost:
+  vars:
+    ansible_connection: local
+# Lista usuários iniciais, a execução é local por KUBECTL    
+    rbac_groups:
+      devops-admins:
+        - josep
+        - myano
+        - joaon        
+      devops-deploy:
+        - devops-deploy-azure
+      devops-support:
+        - miguel 
+        - salvaro
+      devops-readonly:
+        - dev
+      devops-teste:
+       - teste  
+
+# Servers HAPROXY         
+haproxy:
+  hosts:
+    haproxy-1:
+      ansible_host: 10.41.13.212 
+  vars:
+    port_http: 80
+    port_https: 443
+    port_stats_haproxy: 1936
+# Conditionals FLAGS CONTROLPLANES
+    ctrl_flags:
+      is_haproxy: true 
+      is_keepalived: true
+      is_server: true   
+# Variáveis SYSCTL do service HAPROXY    
+    sysctl_vars:
+      net.core.somaxconn: 4096  
+      net.core.netdev_max_backlog: 16384  
+
+# Servers KUBERNETES 
+# => Master
+master:
+  hosts:
+    controlplane-1:
+      ansible_host: 10.41.13.213
+    vars:
+  # Conditionals FLAGS CONTROLPLANES
+      ctrl_flags:
+        is_k8s_server: true
+        in_k8s_master: true 
+  # Variáveis SYSCTL do service CONTROLPLANES
+      sysctl_vars:
+        net.core.somaxconn: 2048  
+        net.core.netdev_max_backlog: 1000
+
+=> Controlplanes
+controlplanes:
+  hosts:
+    controlplane-2:
+      ansible_host: 10.41.13.214
+    vars:
+  # Conditionals FLAGS CONTROLPLANES
+      ctrl_flags:
+        is_k8s_server: true
+        in_k8s_master: true 
+  # Variáveis SYSCTL do service CONTROLPLANES
+      sysctl_vars:
+        net.core.somaxconn: 2048  
+        net.core.netdev_max_backlog: 1000
+
+# => Workers     
+workers:
+  hosts:
+    worker-1:
+      ansible_host: 10.41.13.214
+  vars:
+# Conditionals FLAGS WORKERS
+    ctrl_flags:
+      is_k8s_server: true 
+      is_k8s_workers: true
+      in_k8s_workers: true
+# Variáveis SYSCTL do service WORKERS    
+    sysctl_vars:
+      net.core.somaxconn: 6144  
+      net.core.netdev_max_backlog: 20000
+
+kubernetes:
+  children:
+    controlplanes:
+    workers:
+
+# Server NFS
+nfs:
+  hosts: 
+    nfs_server:
+      ansible_host: 10.41.13.75
+  vars:
+    storage_nfs:
+      nfs_server: 10.41.13.75
+      nfs_path: /data/nfs
+      name_storage: nfs 
+      disk_atached: /dev/sdb
+# Conditionals FLAGS NFS
+    ctrl_flags:
+# Variáveis SYSCTL do service NFS    
+    sysctl_vars:
+
+# Variáveis comuns 
+all:
+  vars:
+# Variáveis globais 
+    ansible_user: infra
+    ansible_ssh_private_key_file: /home/jose/.ssh/id_rsa
+
+# Conditionals FLAGS  
+    ctrl_flags:
+      is_server: true
+      is_k8s_server: true 
+      is_k8s_workers: true
+      is_haproxy: true 
+      is_keepalived: true
+      in_k8s_master: true   
+      in_k8s_workers: true 
+      in_k8s_ctrl_planel: true 
+
+# Variáveis de ambiente (environment)
+    dns_server:
+    - 10.41.12.10      
+    environment_name: teste
+    cluster_name: teste_config  
+    ip_virtual: 10.41.13.212
+    network_pod: 10.244.0.0/16
+    port_k8s: 6443
+
+# Versões usadas 
+    versions:
+      version_k8s: 1.27.3-00
+      runc_version: v1.1.6
+      conteinerd_version: 1.7.1
+      container_netwok_version: v1.3.0
+
+  children:
+    kubernetes:
+    haproxy:
+    running_localhost:
+    nfs:
