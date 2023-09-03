@@ -1,0 +1,7 @@
+kubectl get rs
+kubectl get deployments
+kubectl rollout history deployment nginx-deployment
+kubectl annotate deploy ou kubectl annotate deployment
+kubectl rollout history deployment xginx-deployment
+
+kubectl rollout undo deployment --to-revison=version
