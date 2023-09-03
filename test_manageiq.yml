@@ -1,0 +1,19 @@
+- name: Example of Workspace interaction - reading a state_var
+  hosts: testes
+  become: yes
+
+  vars:
+  - manageiq_validate_certs: false
+
+  roles:
+  - syncrou.manageiq-automate:
+
+  tasks:
+  - name: Retrieve the saved 'date_stamp' state var
+    manageiq_automate:
+      workspace: "{{ workspace }}"
+      get_state_var:
+        attribute: "date_stamp"
+    register: saved_date_stamp
+
+  - debug: var=saved_date_stamp

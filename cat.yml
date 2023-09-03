@@ -1,0 +1,26 @@
+- hosts: "testes"
+  become: yes
+
+  tasks:
+#     - name: Get the token for joining the worker nodes
+#       shell: kubeadm token create  --print-join-command
+#       register: kubernetes_join_command
+#     - debug:
+#       msg: "{{ kubernetes_join_command.stdout }}"
+
+
+
+---
+- hosts: all
+  become: yes
+  tasks:
+  - name: Install packages
+    apt:
+      name:
+      - nmap
+      state: latest
+      cache_valid_time: 3600
+  - name: Scan host using nmap
+    shell: nmap "{{ ip_var }}"
+    register: out
+  - debug: var=out.stdout_lines

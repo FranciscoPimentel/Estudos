@@ -1,0 +1,39 @@
+- name : Install java
+  become: yes
+  become_user: weblogic
+  tags: installjava, app
+  shell: "tar -xzf server-jre*.tar.gz"
+  args:
+   chdir: "{{ oracle_home }}"
+  environment:
+   JAVA_HOME: "/opt/oracle/jdk1.8.0_191"
+   PATH: "{{JAVA_HOME}}/bin"
+
+- name: Crate a Soft link to java
+  become: yes
+  become_user: root
+  tags: linkjava
+  shell: "ln -s {{oracle_home}}/jdk1.8.0_191/bin/java /usr/bin/java"
+  ignore_errors: true
+
+- name : Validate Java
+  become: yes
+  become_user: weblogic
+  tags: app,vjava
+  command: "java -version"
+  register: javaver
+
+- debug:
+    msg: " Java Version Found {{ javaver.stderr }}"
+
+- name: Install Weblogic 
+  become: yes
+  become_user: weblogic
+  tags: installweblogic,app
+  register: wlsinstall
+  shell: "java -jar {{ oracle_home}}/fmw*.jar -silent -invPtrLoc {{oracle_home}}/oraInst.loc -responseFile {{oracle_home}}/install.file -ignoreSysPrereqs -force -novalidation ORACLE_HOME={{oracle_home}} INSTALL_TYPE='WebLogic Server'"
+  args:
+    chdir: "{{ oracle_home }}"
+  when: "'java version \"1.8.0_191\"' in javaver.stderr"
+  failed_when: "'failed' in wlsinstall.stderr"
+  changed_when: "'already installed' not in wlsinstall.stdout"

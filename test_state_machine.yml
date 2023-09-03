@@ -1,0 +1,59 @@
+- hosts: testes
+  become: yes
+  gather_facts: yes
+  tasks:
+#  - name: Primeiro passo
+#    apt:
+#      name:
+#      - ntpdate
+#      - nmap
+#      - vim
+#      state: latest
+#      cache_valid_time: 3600
+#    check_mode: true
+#
+#  - name: Segundo passo
+#    file:
+#      path: "/home/infra/.ansible/teste.txt"
+#      state: "touch"
+#    
+#  - name: Terceiro passo
+#    blockinfile:
+#      path: "/home/infra/.ansible/teste.txt"
+#      block: |
+#        KKKKK 1 check_mod =on 1 sem state
+#        99999 2 check_mod =on 2    
+#        TTTTT 3 check_mod =on 3 
+#    check_mode: false
+#    diff: true
+
+  - name: Populate service facts
+    ansible.builtin.service_facts:
+
+  - name: Print service facts
+    ansible.builtin.debug:
+      var: ansible_facts.services["vmware-tools"]
+  - debug:
+        msg: ok installed!
+    when: "'vmware-tools' in services"
+
+  - name: Print service instalados 
+    command: cat /etc/magic
+    register: myoutput
+
+
+- hosts: testes
+  become: no
+  gather_facts: yes
+  tasks:  
+  - name: Populate service facts
+    service_facts:
+  - name: "see the service <kubelet>  facts as they are"
+    debug: 
+      msg: "{{ansible_facts.services['kubelet.service'].state }}"
+  - name: "Verify if apache is running!"
+    assert:
+      that:
+      - "'{{ansible_facts.services['kubelet.service'].state }}' == 'running'" 
+      fail_msg: "kubelet is down!"
+      success_msg: "kubelet OK"

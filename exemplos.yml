@@ -1,0 +1,41 @@
+            cp ./templates/csr.yml ../../../cert_users/{{ user }}-certificate.yml
+            sed -i 's/name:/name:\ {{user}}/' ../../../cert_users/{{ user }}-certificate.yml
+            base64CSR=$(cat ../../../cert_users/{{ user }}-base64-csr.txt)
+            helm template ./helm-user --debug -n kube-system --set userName={{ user }} --set defaultRole=devops-role --set base64CSR=$BASE64CSR >> {{ user }}.yaml
+            sed -i 's/request:/request:\ '$base64CSR'/' ../../../cert_users/{{ user }}-certificate.yml
+
+
+---
+# Source: helm-admin/templates/01-csr.yaml
+apiVersion: certificates.k8s.io/v1
+kind: CertificateSigningRequest
+metadata:
+  name: batata_pincel
+spec:
+  groups:
+  - system:authenticated
+  request: LS0tLS1CRUdJTiBDRVJUSUZJQ0FURSBSRVFVRVNULS0tLS0KTUlJRWRUQ0NBbDBDQVFBd01ERVdNQlFHQTFVRUF3d05ZbUYwWVhSaFgzQnBibU5sYkRFV01CUUdBMVVFQ2d3TgpaR1YyYjNCek9tRmtiV2x1Y3pDQ0FpSXdEUVlKS29aSWh2Y05BUUVCQlFBRGdnSVBBRENDQWdvQ2dnSUJBS3lyCnZSYU1lSkxCNFZDblpqMWp3ZWFlUnlpYVN1MlFSd2RnNGptNitVa2NQaG1sVStEYWVsZFJ2cENNWFhxaXN4cWUKTkJnZVF1SFluRUE4cHFzWk5RZXc0ZW9MZFBpZlNhK1dMUnhPcGoveUt6OTZrR0VKVVNsZTdiQkdqK0RHbEN1dApHdldYZm55b1RKVUtKWDBKM3JscEhWOVJBL2JUcW1hNDBUK1JhYVdiREFzRFVLdkJxZ1VtY0ZTVnF5QzVFeUtlCkM1YWYvc0pQbWR6VThvZjhaWjFDM1crZXhzanhhQWEyeHVJL29uRjVwLzhGNmtad2FaOE1kdWxvMzFLKzR5TksKcjhFbkdOZ0lDWFBybG0xWmMzSnMycWppTzg1d2lXQWo1MVJ1Zkt0WWtaOTdPWVdleUNNN3FCUWE3cXpJOHFyYwpRZnJHanBZN2xPWFFzWEMvbTRQbVNaaWNUNC9QQ3Bsem05WUNPVUtoWGtWRFJrS2NkWUVGdURFRnl5ODBUZjJtCjFqUWdKOVdlLzJYTlRKbkVkRjBPSStkN2E1VGZTMG8vYUw1bzN3OTVlM3ZMSHpnaUdFYng1M2RKYnZSN2lVZTkKNGpDd3BlMVlWRisyZHREd2tnZUNmQUpuVFNPNEV1aFVXbENSY3dBaHZON0JGOXMrSnkwSnM4NTBZbWNIQkx0UwpobFJNQnhHbmtIZ1o3T3hpeE5nUVBuMnFCVzZBMGdpK0tVa3pSOHBTd2UybEx0VzRyVEFkL0MvSytsSnhUanYzCkpOeVFxSk9VZDBpSTlRTXZtSTZ4dHpsRWR2RXBFMEprMUljdEdQQVZQUXkvd2d2OTYzWi96MXRKRDFSSHk3b2sKSzZxUmVPZWVVakFGVUdmOUFRYlpBVzYrQzM0VjZkVWxSYkh3SmhENUFnTUJBQUdnQURBTkJna3Foa2lHOXcwQgpBUXNGQUFPQ0FnRUFlSS9LQi8rZEFsb2oxN2RCRmdVY01oaUJ1Y0FQVDdyS01Jang4enFNZ0ZXZ3krZHpQZERICmpVdVBQN3NWbkI4N3kzazBrMFRkVHMvOGpEWFc3VkpaOWZwa0lGcUVmWDArQlc1MXJYTnNOTlFmYkFmMDJBVUgKSEdGc2ZHZkczOWQ5UUhtSWRlVkVTU0ZpMTBVM1dKblRlRmVzZnBTZitKeFJLaU5xTlVaZDdiZkFTODdyTWV2NAp3WU5zaFVPWjlqYUNwaW5CZ0lNMWhVTWMwVjR0N3E3UFRQUnhqUGc5a29oTFlJNlFhcDQrRFhEeEN4QlI5Y1cvCnhScml1RWRCQVUxQjV5T0p3U1JKbWdVSFBmMkJ3bC9LN0orN3RqYWJ4MTg2cTdwbDRjU2laUUFhZExJTit0RlQKQzdwcWQrSko1WHRZSXZIQ1VaenlKSk5iaEZhajk0T09NY2R1UURaVktQMEdkY3docXNWb0JJcHA1YzJUV0FUeApDOTJJUjhpcmR3VElrWU1KajZ4UGp2Qy9veHg0WDMwUDFTU05Vb1UxVStDWXVrQWFVN2FOZ21IdXJuWGZqUERKClVxWisyQmhxUWV3cWptSXZ5YmpqK3BpRGxuUVdBTzAvazk5UTlOeXpSREYyYkNkRnJWcE9SbU9kaEpnWFU5bEQKRzJ2TCtiSWxyWTdETmlrU0xPNzNFR3ZjTzhlUkw4MW13MnIyZUpYbmxCek40dXlqbWxsS0tMZGlLandJd2NBKwpvQ01XUmp1VjZ5K1FNQitDWXVPalNSbTlrV2cweWR6MCt3K0xHQzZyVVRvTGYwbXRQWEZZSWd6L1FXQkp5UStwCkZiRmU3Z1hrUURlT2FkWlJxVlZIYUJHT2pGYmRNcTRNYVZCaFVEN1VDRFd2T2I4eVpRMXRtamM9Ci0tLS0tRU5EIENFUlRJRklDQVRFIFJFUVVFU1QtLS0tLQo=
+  signerName: kubernetes.io/kube-apiserver-client
+  usages:
+  - client auth
+---  
+# Source: helm-admin/templates/03-serviceaccount.yaml
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: batata_pincel
+---
+# Source: helm-admin/templates/02-cluster-role-binding.yaml
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: batata_pincel-user
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: devops-role
+subjects:
+- kind: ServiceAccount
+  name: batata_pincel-user
+  namespace: kube-system
+
