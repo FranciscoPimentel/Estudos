@@ -1,0 +1,41 @@
+Relação de portas para acessar portainer/Grafana e Prometheus 
+https://teste.tcp.com.br:9000 => portainer
+https://teste.tcp.com.br:3000 => Grafana
+https://teste.tcp.com.br:9090 => prometheus
+https://teste.tcp.com.br:1936 => Status do Haproxy
+
+
+Harbor12345
+
+
+---
+Implementação de ferramentas de monitoramento, mensagens, gerenciamento e alertas no ambiente do Registry Harbor de PROD.
+
+- Portainer como stack do docker swarm, para acesso pelo IP do balanceador;
+- Grafana também como stack do docker swarm, para monitoramento em caso de problemas;
+- Prometheus monitoramento de mensagens e também criar alertas managers, verificar conectividade com PRTG;
+- Configuração do HaProxy para balanceamento usando apenas um domínio, ports diferentes.
+- Status Haproxy.
+
+---
+https://dev.to/chinhh/server-monitoring-with-prometheus-and-grafana-266o
+
+
+Arquivo configuração do prometheus:
+cd /etc/prometheus/prometheus.yml
+
+Portainers co
+
+mudando de projeto, vi um da Linux Tips que vem completo, (Prometheus, Netdata, cAdvisor, Grafana, Docker e Slack), também achei legal a ferramenta NetData, instalando e mapeando nos demais servers.
+
+
+solução para o gluster
+https://stanislas.blog/2018/10/how-to-mount-local-glusterfs-volume-boot-fstab-systemd-fix/
+
+localhost:/harbor /data/goharbor glusterfs defaults,_netdev 0 0
+
+mkdir /etc/systemd/system/srv.mount.d
+vim override.conf
+[Unit]
+After=glusterfs-server.service
+Wants=glusterfs-server.service
