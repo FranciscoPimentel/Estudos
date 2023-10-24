@@ -1,0 +1,23 @@
+- name: Write hostname
+  hosts: localhost
+  become: no
+
+  tasks:
+  - name: Variável de acesso usuário 
+    import_tasks: ../../azure_key_vault.yml
+
+  #   shell: az keyvault secret show --query value --name {{ vault.fluentbit.user }} --vault-name {{ vault.name }} | head -1
+  #   register: user_fluentbit
+ 
+  # - name: Variável de acesso pass 
+  #   shell: az keyvault secret show --query value --name {{ vault.fluentbit.pass }} --vault-name {{ vault.name }} | head -1
+  #   register: pass_fluentbit
+
+  - name: write hostname using jinja2
+    ansible.builtin.template:
+       src: values/fluentbit.j2
+       dest: /tmp/fluent.yml
+
+
+
+

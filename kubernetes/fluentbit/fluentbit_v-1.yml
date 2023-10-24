@@ -1,0 +1,63 @@
+fluent-bit.conf: |
+    [SERVICE]
+      Parsers_File      C:\\fluent-bit\\parsers.conf
+
+    [INPUT]
+      Name              tail
+      Tag               kube.*
+      Path              C:\\var\\log\\containers\\*.log
+      Parser            docker
+      DB                C:\\fluent-bit\\tail_docker.db
+      Mem_Buf_Limit     7MB
+      Refresh_Interval  10
+
+    [INPUT]
+      Name              tail
+      Tag               kubelet.err
+      Path              C:\\k\\kubelet.err.log
+      DB                C:\\fluent-bit\\tail_kubelet.db
+
+    [FILTER]
+      Name              kubernetes
+      Match             kube.*
+      Kube_URL          https://kubernetes.default.svc.cluster.local:443
+
+    [OUTPUT]
+        Name opensearch
+        Match *
+        Host 10.41.12.59
+        Port 9200
+        Index logstash-*
+        Type _doc
+        Logstash_Format on
+        Logstash_Prefix node
+        Retry_Limit False
+        Suppress_Type_Name on
+
+parsers.conf: |
+    [PARSER]
+        Name         docker
+        Format       json
+        Time_Key     time
+        Time_Format  %Y-%m-%dT%H:%M:%S.%L
+        Time_Keep    On
+
+    [OUTPUT]
+        name      tcp
+        match     *
+        host      127.0.0.1
+        port      9090
+        format    json_lines
+        # Networking Setup
+        net.dns.mode                TCP
+        net.connect_timeout         5
+        net.source_address          127.0.0.1
+        net.keepalive               on
+        net.keepalive_idle_timeout  10
+resources: 
+  requests:
+    memory: "128Mi"
+    cpu: "250m"
+  limits:
+    memory: "512Mi"
+    cpu: "500m"

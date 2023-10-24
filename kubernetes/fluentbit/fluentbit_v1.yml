@@ -352,39 +352,24 @@ config:
   service: |
     [SERVICE]
         Daemon Off
-        Flush 5
-        Log_Level info
+        Flush {{ .Values.flush }}
+        Log_Level {{ .Values.logLevel }}
         Parsers_File /fluent-bit/etc/parsers.conf
         Parsers_File /fluent-bit/etc/conf/custom_parsers.conf
-        HTTP_Server on
+        HTTP_Server On
         HTTP_Listen 0.0.0.0
         HTTP_Port {{ .Values.metricsPort }}
         Health_Check On
-        Trace_Error On
-        Config_Watch On                
 
   ## https://docs.fluentbit.io/manual/pipeline/inputs
   inputs: |
     [INPUT]
         Name tail
-        Tag kube.*
         Path /var/log/containers/*.log
         multiline.parser docker, cri
-        Mem_Buf_Limit 5MB
-        Skip_Long_Lines Off
-        Refresh_Interval 10
-        Rotate_Wait 30
-        Read_from_Head ${READ_FROM_HEAD}       
-
-    [INPUT]
-        Name tail
         Tag kube.*
-        Path /var/log/containers/fluent-bit*
-        multiline.parser docker, cri
         Mem_Buf_Limit 5MB
-        Skip_Long_Lines Off
-        Refresh_Interval 10
-        Read_from_Head ${READ_FROM_HEAD}
+        Skip_Long_Lines On
 
     [INPUT]
         Name systemd
@@ -395,40 +380,21 @@ config:
   ## https://docs.fluentbit.io/manual/pipeline/filters
   filters: |
     [FILTER]
-        Name                kubernetes
-        Match               *
-        Kube_URL            https://kubernetes.default.svc:443
-        kube_CA_File        /var/run/secrets/kubernetes.io/serviceaccount/ca.crt  
-        Kube_Token_File     /var/run/secrets/kubernetes.io/serviceaccount/token
-        Kube_Tag_Prefix     kube.var.log.containers.
-        Merge_Log           On
-        Merge_Log_Key       log_processed
-        K8S-Logging.Parser  On
+        Name kubernetes
+        Match kube.*
+        Merge_Log On
+        Keep_Log Off
+        K8S-Logging.Parser On
         K8S-Logging.Exclude On
-        Labels              On
-        Annotations         On
-        Kubelet_Port        10250
-        Buffer_Size         0
-
-    [FILTER]
-        Name   modify
-        Match  k8s.*
-        Condition Key_value_matches log regex_to_match.* 
-        Set DROP_THIS true
-
-    [FILTER]
-        Name   grep
-        Match  k8s.*
-        Regex  DROP_THIS true
-
 
   ## https://docs.fluentbit.io/manual/pipeline/outputs
   outputs: |
     [OUTPUT]
         Name opensearch
-        Match kube.*
-        Host 10.41.12.59
+        Match *
+        Host 10.41.5.55
         Port 9200
+        Index logstash-*
         Type _doc
         HTTP_User devops-admins
         HTTP_Passwd dev0p$@adm1n$
@@ -439,6 +405,7 @@ config:
         tls on
         tls.verify off
         
+
   ## https://docs.fluentbit.io/manual/administration/configuring-fluent-bit/classic-mode/upstream-servers
   ## This configuration is deprecated, please use `extraFiles` instead.
   upstream: {}
@@ -446,25 +413,11 @@ config:
   ## https://docs.fluentbit.io/manual/pipeline/parsers
   customParsers: |
     [PARSER]
-        Name docker
+        Name docker_no_time
         Format json
         Time_Keep Off
         Time_Key time
         Time_Format %Y-%m-%dT%H:%M:%S.%L
-
-    [PARSER]
-        Name                syslog
-        Format              regex
-        Regex               ^(?<time>[^ ]* {1,2}[^ ]* [^ ]*) (?<host>[^ ]*) (?<ident>[a-zA-Z0-9_\/\.\-]*)(?:\[(?<pid>[0-9]+)\])?(?:[^\:]*\:)? *(?<message>.*)$
-        Time_Key            time
-        Time_Format         %b %d %H:%M:%S
-
-    [PARSER]
-        Name                cri
-        Format              regex
-        Regex               (?<log>(?<="log":")\S(?!\.).*?)(?<!\\)".*(?<stream>(?<="stream":").*?)".*(?<time>\d{4}-\d{1,2}-\d{1,2}T\d{2}:\d{2}:\d{2}\.\w*).*(?=})
-        Time_Key            time
-        Time_Format         %Y-%m-%dT%H:%M:%S.%LZ
 
   # This allows adding more files with arbitary filenames to /fluent-bit/etc/conf by providing key/value pairs.
   # The key becomes the filename, the value becomes the file content.
