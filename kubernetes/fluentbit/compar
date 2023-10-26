@@ -1,0 +1,16 @@
+bind {{ ansible_default_ipv4['address'] }} -::1
+protected-mode {{ protected_mode }}
+Accept connections on the specified port, default is {{ port_redis }} (IANA #815344).
+port {{ port_redis }}
+tls-port {{ port_redis }}
+masterauth {{ pass_redis.stdout }}
+requirepass {{ pass_redis.stdout }}
+cluster-enabled  {{ cluster_enabled }}
+cluster-config-file {{ cluster_config_file }}
+cluster-node-timeout {{ value_cluster_timeout }}
+cluster-announce-tls-port {{ port_redis }}
+
+
+cluster_require_full
+
+redis-cli --cluster create 10.41.12.206:7000 10.41.12.207:7000 10.41.12.208:7000 --cluster-yes -a 775OAWxhwyUTsbke
