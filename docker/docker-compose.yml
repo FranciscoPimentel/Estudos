@@ -1,0 +1,45 @@
+version: '3'
+services:
+  web:
+    image: ubuntu
+    networks:
+      test_network:
+        ipv4_address: 172.16.238.10
+  ssh_service:
+    build: .
+    ports:
+    - "2222:22"
+  db:
+    image: postgres
+    networks:
+      test_network:
+        ipv4_address: 172.16.238.11
+networks:
+  test_network:
+    ipam:
+      driver: default
+      config:
+        - subnet: 172.16.238.0/24
+        
+
+  pre_tasks:
+    - import_tasks: ../../common/ansible_state/k8s_state.yml
+
+    - debug:
+        msg: "{{ cluster_name.stdout }}"
+
+# should_install_k8s: '{{ state_k8s.installed is not defined or not state_k8s.installed }}'
+
+    - set_fact:
+        should_install_k8s: '{{ state_k8s.installed is not defined or not state_k8s.installed }}'
+        is_k8s_server: '{{ ctrl_flags.is_k8s_server is defined and ctrl_flags.is_k8s_server }}'
+ - name: read file on host
+  hosts: all
+  vars:
+   contents: "{{ lookup('file','example.txt') }}"
+  tasks:
+   - name: print file
+     ansible.builtin.debug:
+      msg: "the content of file is {{ contents }}"
+execution
+ansible-pilot $ ansible-playbook -i virtualmachines/demo/inventory…

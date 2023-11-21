@@ -1,0 +1,13 @@
+- hosts: "{{ nodes }}" #controlplanes, workers,master_k8s
+  name: teste de status service Kubernetes
+  become: no
+
+  tasks:
+# 1 - Preparando o sistema operacional
+    - name: Status Service 
+      shell: systemctl status containerd
+      register: result 
+
+    - name: Retorno do status service 
+      debug: 
+        msg: '{{ result.stdout | to_nice_json }}' 

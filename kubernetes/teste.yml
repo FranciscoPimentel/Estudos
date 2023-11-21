@@ -1,0 +1,256 @@
+- name: set fact/case example
+  hosts: localhost
+  tasks:
+
+    # - name: 1 - Definir items para loop;
+    #   when: ctrl_flags.in_k8s_rbac is defined and ctrl_flags.in_k8s_rbac
+    #   ansible.builtin.set_fact:
+    #     rbac_user_groups: "{{ rbac_groups | dict2items | subelements('value') }}"
+    #   loop: "{{ rbac_user_groups }}"
+
+
+    # - name: 2 - Print users
+    #   loop: "{{ rbac_user_groups }}"
+    #   # when: "'' in rbac_users
+    #   shell: echo {{ item.1 }}
+
+    - name: 1 - Definir items para loop;
+      ansible.builtin.set_fact:
+        rbac_user_groups: "{{ rbac_groups | dict2items | subelements('value') }}"
+
+    # - name: 2 - Criar diretorio certs-gen caso não exista;
+    #   debug: 
+    #     msg: "{{ item.1 }}"
+    #   loop: "{{ rbac_user_groups }}"
+
+    - name: 2.1 - Listando usuarios cadastrados no cluster
+      shell: |
+        export KUBECONFIG=~/.kube/{{ cluster_name }} 
+        kubectl get clusterrolebinding {{ item.0.key }} -o yaml | yq '.subjects[] | unique_by(.name)' >> /tmp/values.yml
+        cat /tmp/values.yml | sort | uniq  > /tmp/users_rbac.yml 
+      loop: "{{ rbac_user_groups }}" 
+      register: result
+
+    - debug:
+        msg: "{{ result }}"
+
+
+
+    # - name: 2 - Users cadastrados no inventario
+    #   ansible.builtin.set_fact:
+    #     users_rbac: 
+    #   loop: "{{ rbac_user_groups }}" 
+
+
+
+
+#     - name: 2 - Criar diretorio certs-gen caso não exista;
+#       when: 
+#       shell: echo "{{ item.1 }}" #>> /tmp/values.txt
+#       register: user_invet
+#       loop: "{{ rbac_user_groups }}" 
+
+
+
+
+
+#     - name: Teste valid variable
+#       when:  user_k8s in 'josep''
+#       command: echo 'uptime'  
+
+
+
+
+# #       loop: "{{ rbac_user_groups }}"
+# # #    yq -i '.{{ _state_key }} = true' /etc/ansible_state_control/{{ _state_group }}.state
+# #     - name: 3 - Print groups
+# #       shell: echo {{ item.0.key }} >> /tmp/testes.yml
+# #       loop: "{{ rbac_user_groups }}"
+
+
+
+
+
+
+    # - name: loop through the 'users' list
+    #   set_fact:
+    #      rbac_users: "{{ lookup('ansible.builtin.dict', rbac_groups) | to_yaml }}"
+    #   register: rbac_k8s
+    #   #    group_users: "{{ item.key }}"
+    #   # loop: "{{ lookup('ansible.builtin.dict', rbac_groups) }}"
+    # - name: Save users file
+    #   copy:
+    #     content: "{{ rbac_k8s }}"
+    #     dest: "{{ lookup('env', 'PWD') }} /tmp/testes.yml"
+
+#     - name: Print list
+#       debug:
+#         msg: "{{ rbac_users | to_yaml  }}"
+
+# ###
+#     - name: Get system uptime
+#       ansible.builtin.shell: uptime
+#       register: my_register_var
+
+
+
+###
+
+    # - name: Print list groups de users
+    #   loop: "{{ lookup('ansible.builtin.dict', rbac_groups) }}"
+    #   shell: echo teste RBAC_USERS {{ rbac_users }}
+
+    # - name: Print list de users
+    #  loop: "{{ lookup('ansible.builtin.dict', rbac_groups) }}"
+    #   when: "'servio' in rbac_users"
+    #   shell: echo teste GROUP_USERS {{ group_users }}
+
+
+
+##
+# check users inventory com o k8s -> passa a lista de usuários existentes e se deseja recriar ou criar um novo.
+# salva em um arquivo temporário para executar o script.
+# tem passar duas opções crir do inventário ou do arquivo no /tmp
+
+    # - name: loop through the 'users' list
+    #   set_fact:
+    #      rbac_users: '{{ item.value }}'
+    #      msg: "{{ item.key }} : {{ item.value }}"
+    #   loop: "{{ lookup('ansible.builtin.dict', rbac_groups) }}"
+
+
+    # - name: Print list groups de users
+    #   loop: "{{ lookup('ansible.builtin.dict', rbac_groups) }}"
+    #   when: "'servio' in rbac_users"
+    #   shell: echo teste passou {{ item.value }}
+
+
+ #     register: list
+
+    # - name: Print list
+    #   shell: echo '{{ list.stdout_lines }}'
+
+
+    # - name: loop through the 'fruits' list
+    #   debug:
+    #     var: item
+    #   with_items: "{{ rbac_groups }}"
+
+
+    # - name: List Users buscando do inventário
+    #   shell: |
+    #     yq '.running_localhost.vars.rbac_groups | keys' ../../inventario/invent_prd.yml | awk '{print $2}'
+    #   register: group_rbac
+    # - debug:
+    #     msg: '{{ group_rbac.stdout_lines }}'
+    # - set_fact:
+    #     list_gruoup: '{{ group_rbac.stdout_lines }}'
+
+    # - set_fact:
+    #     user_rbac: "{% if {{ user_rbac }} == '{{ rbac_groups.devops-admins }}' %}\
+    #          {% elif {{ user_rbac }} == '{{ rbac_groups.devops-deploy }}' %}\
+    #          {% elif {{ user_rbac }} == '{{ rbac_groups.devops-support }}' %}\
+    #          {% elif {{ user_rbac }} == '{{ rbac_groups.devops-readonly }}' %}\
+    #          {% else %}FALSE\
+    #          {% endif %}"
+
+
+    # - name: List Users buscando do inventário
+    #   shell: |
+    #     yq '.running_localhost.vars.rbac_groups.{{ list_gruoup }}' ../../inventario/invent_prd.yml | awk '{print $2}'
+
+
+
+      # loop: '{{ rbac_groups }}'
+    # - debug:
+    #     msg: "{{ users_rbac | type_debug}}"
+
+    #   with_items:
+    #     - '{{ groups_users }}'
+
+
+    # - name: List Groups de usuários buscando do inventario
+    #   shell: |
+    #     yq '.running_localhost.vars.rbac_groups | keys' ../../inventario/invent_prd.yml | awk '{print $2}'
+    #   register: groups_users
+
+
+    # - name: RBAC State
+    #   shell: |
+    #     export KUBECONFIG=~/.kube/'{{ cluster_name }}'
+    #     kubectl describe ClusterRoleBinding {{ rbac_groups }} | grep User | awk '{print $2}'
+    #   register: user_rbac
+
+    # - debug:
+    #     msg: '{{ user_rbac.stdout_lines }}'
+
+
+    # - set_fact:
+    #     groups_users: '{{ groups_users.stdout_lines }}'
+    #   with_items:
+    #     - '{{ groups_users }}'
+
+    # - name: List Users buscando do inventário
+    #   shell: |
+    #     yq '.running_localhost.vars.rbac_groups.{{ groups_users }}' ../../inventario/invent_prd.yml
+    #   register: user_rbac
+
+    # - debug:
+    #     msg: '{{ groups_users }}'
+    #   with_items:
+    #     - '{{ groups_users }}'
+
+
+    # - name: List Users
+    #   user:
+    #     name: "{{ item }}"
+    #     state: present
+    #     groups: "{{ groups_users }}"
+    #   loop:
+    #     - '{{ rbac_groups[ "{{ groups_users }}" ] }}'
+
+
+
+    # - name: list users
+    #     user:
+    #     name: “{{ item.name }}”
+    #     state: present
+    #     group: “{{item.groups}}”
+    #     loop:
+    #     - { name: user_rbac, groups: rbac_groups.devops-admins }
+    #     - { name: user_rbac, groups: rbac_groups.devops-deploy }
+    #     - { name: user_rbac, groups: rbac_groups.devops-support }
+    #     - { name: user_rbac, groups: rbac_groups.devops-readonly }
+
+    # - name: Compare users
+    #     user:
+    #     name: "{{ item[0] }}"
+    #     state: present
+    #     group: “{{ item[1] }}”
+    #     loop: "{{ ['user5', 'user6'] |product(['sre', ‘dbadmin’])|list }}
+
+    # - set_fact:
+    #     user_rbac: "{% if {{ user_rbac }} == '{{ rbac_groups.devops-admins }}' %}\
+    #          {% elif {{ user_rbac }} == '{{ rbac_groups.devops-deploy }}' %}\
+    #          {% elif {{ user_rbac }} == '{{ rbac_groups.devops-support }}' %}\
+    #          {% elif {{ user_rbac }} == '{{ rbac_groups.devops-readonly }}' %}\
+    #          {% else %}FALSE\
+    #          {% endif %}"
+
+    # - name: one
+    #   debug:
+    #     msg: "{{ one }}"
+
+    # - name: two
+    #   debug:
+    #     msg: "{{ two }}"
+
+    # - name: dc
+    #   debug:
+    #     msg: Your DC is {{ DC }}
+    #   when: DC == 'DC2'
+
+    # - name: combine
+    #   debug:
+    #     msg: "{{ one }}-{{ two }}-{{ three }}-{{ DC }}"
+
