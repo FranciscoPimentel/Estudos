@@ -1,0 +1,52 @@
+# List of dictionaries
+      bands:
+        - name: The Beatles
+          members:
+          - Lennon
+          - McCartney
+          - Harrison
+          - Starr
+          formed: 1960
+          decade: 60s
+
+        - name: The Eagles
+          members:
+          - Frey
+          - Henley
+          - Leadon
+          - Meisner
+          formed: 1971
+          decade: 70s
+
+        - name: Run DMC
+          members:
+          - Simmons
+          - McDaniels
+          - Mizell
+          formed: 1983
+          decade: 80s
+
+        - name: Red Hot Chili Peppers
+          members:
+          - Kiedis
+          - Smith
+          - Frusciante
+          - Balzary
+          formed: 1982
+          decade: 90s
+
+        - name: "Destiny's Child"
+          members:
+          - Knowles
+          - Rowland
+          - Williams
+          formed: 1990
+          decade: 00s
+
+        - name: "Black Eyed Peas"
+          members:
+          - Adams
+          - Lindo
+          - Gomez
+          formed: 1995
+          decade: 00s
