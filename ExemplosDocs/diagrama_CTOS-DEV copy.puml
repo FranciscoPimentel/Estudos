@@ -1,0 +1,69 @@
+@startuml
+
+!define SPRITESURL https://raw.githubusercontent.com/rabelenda/cicon-plantuml-sprites/v1.0/sprites
+!includeurl SPRITESURL/server.puml
+!includeurl SPRITESURL/haproxy.puml
+!includeurl SPRITESURL/redis.puml
+!includeurl SPRITESURL/rabbitmq.puml
+
+
+
+
+
+
+
+
+
+
+
+
+footer Kubernetes Plant-UML
+scale max 1024 width
+
+skinparam nodesep 10
+skinparam ranksep 10
+
+' Azure
+!define AzurePuml https://raw.githubusercontent.com/RicardoNiepel/Azure-PlantUML/release/2-1/dist
+
+!includeurl AzurePuml/AzureCommon.puml
+!includeurl AzurePuml/AzureSimplified.puml
+
+!includeurl AzurePuml/Containers/AzureContainerRegistry.puml
+!includeurl AzurePuml/Databases/AzureSqlDatabase.puml
+!includeurl AzurePuml/DevOps/AzurePipelines.puml
+!includeurl AzurePuml/Identity/AzureActiveDirectory.puml
+!includeurl AzurePuml/Networking/AzureLoadBalancer.puml
+!includeurl AzurePuml/Security/AzureKeyVault.puml
+
+' Azure complemento
+!define AzurePuml https://raw.githubusercontent.com/plantuml-stdlib/Azure-PlantUML/release/2-2/dist
+!includeurl AzurePuml/AzureCommon.puml
+!includeurl AzurePuml/Analytics/AzureEventHub.puml
+!includeurl AzurePuml/Analytics/AzureStreamAnalyticsJob.puml
+!includeurl AzurePuml/Web/AzureAPIManagement.puml
+
+' Kubernetes
+!define KubernetesPuml https://raw.githubusercontent.com/dcasati/kubernetes-PlantUML/master/dist
+
+!includeurl KubernetesPuml/kubernetes_Common.puml
+!includeurl KubernetesPuml/kubernetes_Context.puml
+!includeurl KubernetesPuml/kubernetes_Simplified.puml
+
+!includeurl KubernetesPuml/OSS/KubernetesApi.puml
+!includeurl KubernetesPuml/OSS/KubernetesIng.puml
+!includeurl KubernetesPuml/OSS/KubernetesPod.puml
+
+' AzureAPIManagement(api,"\n Aplicação")
+
+collections "<$web>\n Internet" as aplicacation
+'rectangle "<$server>\n Service B" as serviceB
+rectangle "<$redis>\n 10.41.12.19\n PORT 6379" as redisctos_dev
+rectangle "<$rabbitmq>\n 10.41.20.16\n PORT 5672 " as rabbitmqctos_dev
+rectangle "<$haproxy>\n Haproxy APP\n 10.41.12.20" as Haproxy
+
+aplicacation --> Haproxy
+Haproxy --> redisctos_dev
+Haproxy --> rabbitmqctos_dev
+@enduml
+

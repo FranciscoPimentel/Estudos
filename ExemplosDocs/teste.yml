@@ -1,0 +1,53 @@
+- hosts: "{{ nodes }}" #controlplanes, workers,master_k8s
+  name: teste de status service Kubernetes
+  become: no
+
+  tasks:
+# 1 - Preparando o sistema operacional
+    - name: Status Service 
+      shell: systemctl status kubelet 
+      register: result 
+
+    - name: Retorno do status service 
+      debug: 
+        msg: '{{ result.stdout_lines }}' 
+---
+
+- hosts: master_k8s
+  name: Playbook name 02-k8s_init_master.yml, responsável por iniciliazar o PRIMEIRO nó do cluster
+  become: yes
+
+  pre_tasks:
+    - import_tasks: ../../common/ansible_state/read_state.yml
+      vars:
+        - _state_group: k8s
+    - set_fact:
+        should_initialize_k8s: '{{ state_k8s.initialize is not defined or not state_k8s.initialize }}'
+        is_k8s_server: '{{ ctrl_flags.is_k8s_server is defined and ctrl_flags.is_k8s_server }}'
+  post_tasks:
+    - import_tasks: ../../common/ansible_state/set_state.yml
+      vars:
+        - _state_key: initialize
+        - _state_group: k8s
+
+# Iniciando o kubeadm init no master, lembrando que este comando só será executado uma vez, nos demais servers que farão parte do control-planel,
+  tasks:
+    - name: 1.1 - Pull images Kubernetes
+      when: is_k8s_server and should_initialize_k8s 
+      shell: kubeadm config images pull > logs_init.txt 
+
+    - name: 1.2 - Inicialização kubeadm init
+      when: is_k8s_server and should_initialize_k8s     
+      shell: kubeadm init --control-plane-endpoint "{{ ip_virtual }}:{{ port_k8s }}" --pod-network-cidr {{ network_pod }} --upload-certs --node-name {{ inventory_hostname }} >> logs_init.txt 
+      register: k8s_init
+    - debug: 
+        var: k8s_init.stdout_lines
+
+    - name: 1.3 - Kubeconfig configurando para o cluster
+      when: is_k8s_server and should_initialize_k8s    
+      command: "{{ item }}"
+      become: no
+      with_items:
+      - mkdir -p $HOME/.kube
+      - sudo cp -irf /etc/kubernetes/admin.conf $HOME/.kube/config
+      - sudo chown {{ ansible_user }}:{{ ansible_user }} $HOME/.kube/config

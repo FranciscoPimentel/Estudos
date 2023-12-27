@@ -1,0 +1,281 @@
+@startuml Basic usage - Stream processing with Azure Stream Analytics
+
+!define AzurePuml https://raw.githubusercontent.com/plantuml-stdlib/Azure-PlantUML/release/2-2/dist
+!includeurl AzurePuml/AzureCommon.puml
+!includeurl AzurePuml/Analytics/AzureEventHub.puml
+!includeurl AzurePuml/Analytics/AzureStreamAnalyticsJob.puml
+!includeurl AzurePuml/Databases/AzureCosmosDb.puml
+
+left to right direction
+
+agent "Device Simulator" as devices #fff
+
+AzureEventHub(fareDataEventHub, "Fare Data", "PK: Medallion HackLicense VendorId; 3 TUs")
+AzureEventHub(tripDataEventHub, "Trip Data", "PK: Medallion HackLicense VendorId; 3 TUs")
+AzureStreamAnalyticsJob(streamAnalytics, "Stream Processing", "6 SUs")
+AzureCosmosDb(outputCosmosDb, "Output Database", "1,000 RUs")
+
+devices --> fareDataEventHub
+devices --> tripDataEventHub
+fareDataEventHub --> streamAnalytics
+tripDataEventHub --> streamAnalytics
+streamAnalytics --> outputCosmosDb
+
+@enduml
+
+
+
+
+
+@startuml
+!include <office/Servers/application_server>
+!include <office/Servers/database_server>
+
+nwdiag {
+  network CTOS-DEV {
+      address = "10.41.12.???"
+
+      // set multiple addresses (using comma)
+      CTOSQAhaproxy [address = "10.41.12.14",  description = "<$application_server>\n CTOS Haproxy App"]
+      K8SCTOSQAhaproxy [address = "10.41.12.20",  description = "<$application_server>\n CTOS Haproxy Kubernetes"];
+  }
+  network HaproxyKubernetes {
+      address = "10.41.12.20";
+
+      web01 [address = "172.x.x.1"];
+      web02 [address = "172.x.x.2"];
+      db01 [address = "172.x.x.100",  description = "<$database_server>\n db01"];
+      db02 [address = "172.x.x.101",  description = "<$database_server>\n db02"];
+  }
+}
+@enduml
+
+@startuml
+
+nwdiag {
+  group nightly {
+    color = "#FFAAAA";
+    description = "<&clock> Restarted nightly <&clock>";
+    web02;
+    db01;
+  }
+  network dmz {
+      address = "210.x.x.x/24"
+
+      user [description = "<&person*4.5>\n user1"];
+      // set multiple addresses (using comma)
+      web01 [address = "210.x.x.1, 210.x.x.20",  description = "<&cog*4>\nweb01"]
+      web02 [address = "210.x.x.2",  description = "<&cog*4>\nweb02"];
+
+  }
+  network internal {
+      address = "172.x.x.x/24";
+
+      web01 [address = "172.x.x.1"];
+      web02 [address = "172.x.x.2"];
+      db01 [address = "172.2.2.100",  description = "<&spreadsheet*4>\n db01"];
+      db02 [address = "172.x.x.101",  description = "<&spreadsheet*4>\n db02"];
+      ptr  [address = "172.x.x.110",  description = "<&print*4>\n ptr01"];
+  }
+}
+@enduml
+---
+@startuml
+
+!define SPRITESURL https://raw.githubusercontent.com/rabelenda/cicon-plantuml-sprites/v1.0/sprites
+!includeurl SPRITESURL/server.puml
+!includeurl SPRITESURL/kafka.puml
+!includeurl SPRITESURL/haproxy.puml
+
+rectangle "<$server>\n Service A" as serviceA
+rectangle "<$server>\n Service B" as serviceB
+queue "<$kafka>\n Queue A" as queueA
+queue "<$kafka>\n Queue B" as queueB
+rectangle "<$server>\n Service C" as serviceC
+rectangle "<$server>\n Service D" as serviceD
+rectangle "<$server>\n Service E" as serviceE
+rectangle "<$server>\n Service F" as serviceF
+
+  queue "<$kafka>\n Queue C" as queueC
+  queue "<$kafka>\n Queue D" as queueD
+
+rectangle "<$haproxy>\n LoadBalancer" as loadBalancer
+
+serviceA --> queueA
+serviceB --> queueB
+serviceC --> queueC
+serviceD --> queueD
+serviceE --> loadBalancer
+serviceF --> loadBalancer
+loadBalancer --> serviceC
+loadBalancer --> serviceD
+@enduml
+
+---
+@startuml kubernetes
+
+footer Kubernetes Plant-UML
+scale max 1024 width
+
+skinparam nodesep 10
+skinparam ranksep 10
+
+' Azure
+!define AzurePuml https://raw.githubusercontent.com/RicardoNiepel/Azure-PlantUML/release/2-1/dist
+
+!includeurl AzurePuml/AzureCommon.puml
+!includeurl AzurePuml/AzureSimplified.puml
+
+!includeurl AzurePuml/Containers/AzureContainerRegistry.puml
+!includeurl AzurePuml/Databases/AzureCosmosDb.puml
+!includeurl AzurePuml/Databases/AzureSqlDatabase.puml
+!includeurl AzurePuml/DevOps/AzurePipelines.puml
+!includeurl AzurePuml/Identity/AzureActiveDirectory.puml
+!includeurl AzurePuml/Networking/AzureLoadBalancer.puml
+!includeurl AzurePuml/Security/AzureKeyVault.puml
+
+' Kubernetes
+!define KubernetesPuml https://raw.githubusercontent.com/dcasati/kubernetes-PlantUML/master/dist
+
+!includeurl KubernetesPuml/kubernetes_Common.puml
+!includeurl KubernetesPuml/kubernetes_Context.puml
+!includeurl KubernetesPuml/kubernetes_Simplified.puml
+
+!includeurl KubernetesPuml/OSS/KubernetesApi.puml
+!includeurl KubernetesPuml/OSS/KubernetesIng.puml
+!includeurl KubernetesPuml/OSS/KubernetesPod.puml
+
+actor "DevOps" as devopsAlias
+collections "Client Apps" as clientalias
+collections "Helm Charts" as helmalias
+
+left to right direction
+
+' Azure Components
+AzureActiveDirectory(aad, "\nAzure\nActive Directory", "Global")
+AzureContainerRegistry(acr, "ACR", "Canada Central")
+AzureCosmosDb(cosmos, "\nCosmos DB", "Global")
+AzureKeyVault(keyvault, "\nAzure\nKey Vault", "Global")
+AzureLoadBalancer(alb, "\nLoad\nBalancer", "Canada Central")
+AzureSqlDatabase(sql, "\nExternal\ndata stores", "Canada Central")
+AzurePipelines(ado, "CI/CD\nAzure Pipelines", "Global")
+
+' Kubernetes Components
+Cluster_Boundary(cluster, "Kubernetes Cluster") {
+    KubernetesApi(KubernetesApi, "Kubernetes API", "")
+
+    Namespace_Boundary(nsFrontEnd, "Front End") {
+        KubernetesIng(ingress, "API Gateway", "")
+    }
+
+    Namespace_Boundary(nsBackEnd, "Back End") {
+        KubernetesPod(KubernetesBE1, "", "")
+        KubernetesPod(KubernetesBE2, "", "")
+        KubernetesPod(KubernetesBE3, "", "")
+    }
+
+    Namespace_Boundary(nsUtil, "Utiliy Services") {
+        KubernetesPod(KubernetesUtil1, "", "")
+        KubernetesPod(KubernetesUtil2, "","")
+    }
+}
+
+Rel(devopsAlias, aad, "AUTH")
+Rel(helmalias, KubernetesApi, "helm upgrade")
+
+Rel(aad, keyvault, " ")
+Rel(KubernetesApi, aad, "RBAC", "ASYNC")
+
+Rel(clientalias, alb, "HTTP", "ASYNC")
+Rel(alb, ingress, "HTTP", "ASYNC")
+
+Rel(ingress, KubernetesBE1, " ")
+Rel(KubernetesBE1, KubernetesBE2, " ")
+Rel(KubernetesBE1, KubernetesBE3, " ")
+
+Rel(KubernetesBE2, sql, " ")
+Rel(KubernetesBE3, keyvault, "Pod Identity")
+Rel(KubernetesBE3, cosmos, " ")
+
+Rel(ado, acr, "docker push")
+Rel_U(KubernetesApi, acr, "docker pull")
+@enduml
+
+@startuml
+
+!define SPRITESURL https://raw.githubusercontent.com/rabelenda/cicon-plantuml-sprites/v1.0/sprites
+!includeurl SPRITESURL/server.puml
+!includeurl SPRITESURL/kafka.puml
+
+rectangle "<$server>\n Service A" as serviceA
+rectangle "<$server>\n Service B" as serviceB
+queue "<$kafka>" as kafka
+
+serviceA --> kafka
+kafka --> serviceB
+
+@enduml
+
+---
+@startuml
+
+!define SPRITESURL https://raw.githubusercontent.com/rabelenda/cicon-plantuml-sprites/v1.0/sprites
+!includeurl SPRITESURL/server.puml
+!includeurl SPRITESURL/kafka.puml
+!includeurl SPRITESURL/haproxy.puml
+!includeurl SPRITESURL/redis.puml
+!includeurl SPRITESURL/rabbitmq.puml
+
+footer Kubernetes Plant-UML
+scale max 1024 width
+
+skinparam nodesep 10
+skinparam ranksep 10
+
+' Azure
+!define AzurePuml https://raw.githubusercontent.com/RicardoNiepel/Azure-PlantUML/release/2-1/dist
+
+!includeurl AzurePuml/AzureCommon.puml
+!includeurl AzurePuml/AzureSimplified.puml
+
+!includeurl AzurePuml/Containers/AzureContainerRegistry.puml
+!includeurl AzurePuml/Databases/AzureCosmosDb.puml
+!includeurl AzurePuml/Databases/AzureSqlDatabase.puml
+!includeurl AzurePuml/DevOps/AzurePipelines.puml
+!includeurl AzurePuml/Identity/AzureActiveDirectory.puml
+!includeurl AzurePuml/Networking/AzureLoadBalancer.puml
+!includeurl AzurePuml/Security/AzureKeyVault.puml
+
+' Azure complemento
+!define AzurePuml https://raw.githubusercontent.com/plantuml-stdlib/Azure-PlantUML/release/2-2/dist
+!includeurl AzurePuml/AzureCommon.puml
+!includeurl AzurePuml/Analytics/AzureEventHub.puml
+!includeurl AzurePuml/Analytics/AzureStreamAnalyticsJob.puml
+!includeurl AzurePuml/Databases/AzureCosmosDb.puml
+!includeurl AzurePuml/Web/AzureAPIManagement.puml
+
+' Kubernetes
+!define KubernetesPuml https://raw.githubusercontent.com/dcasati/kubernetes-PlantUML/master/dist
+
+!includeurl KubernetesPuml/kubernetes_Common.puml
+!includeurl KubernetesPuml/kubernetes_Context.puml
+!includeurl KubernetesPuml/kubernetes_Simplified.puml
+
+!includeurl KubernetesPuml/OSS/KubernetesApi.puml
+!includeurl KubernetesPuml/OSS/KubernetesIng.puml
+!includeurl KubernetesPuml/OSS/KubernetesPod.puml
+
+AzureCosmosDb(cosmos, "\nCosmos DB", "Global")
+AzureAPIManagement(api,"\n api web", "teste")
+cloud "<$web>\n Internet" as internet
+'rectangle "<$server>\n Service B" as serviceB
+rectangle "<$redis>\n 10.41.12.19\n PORT 6379" as redisctos_dev
+rectangle "<$rabbitmq>\n 10.41.20.16\n PORT 5672 " as rabbitmqctos_dev
+rectangle "<$haproxy>\n Haproxy APP\n 10.41.12.20" as Haproxy
+
+
+internet --> Haproxy
+'Haproxy --> serviceB
+Haproxy --> redisctos_dev
+Haproxy --> rabbitmqctos_dev
+@enduml
