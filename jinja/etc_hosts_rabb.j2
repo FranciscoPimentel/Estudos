@@ -1,0 +1,5 @@
+{% for host in groups['rabbitmq_primary'] %}
+{{ hostvars[host]['ansible_host'] }} {{ hostvars[host]['ansible_facts']['hostname'] }} 
+{% endfor %}{% for host in groups['rabbitmq'] %}
+{{ hostvars[host]['ansible_host'] }} {{ hostvars[host]['ansible_facts']['hostname'] }}
+{% endfor %}

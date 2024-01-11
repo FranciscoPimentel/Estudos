@@ -1,0 +1,8 @@
+---
+all_interfaces:
+  - name: FastEthernet0/1
+    vlan: 10
+    mode: "access"
+  - name: FastEthernet0/2
+    vlan: 20
+    mode: "trunk"

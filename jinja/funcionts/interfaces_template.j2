@@ -1,0 +1,11 @@
+{% macro l2_interfaces(interfaces) %}
+{% for interface in interfaces %}
+    interface {{ interface.name }}
+      switchport mode {{ interface.mode }}
+    {% if interface.mode == 'trunk' %}
+      switchport trunk native vlan {{ interface.vlan }}
+    {% elif interface.mode == 'access' %}
+      switchport access vlan {{ interface.vlan }}
+    {% endif %}
+{% endfor %}
+{% endmacro %}

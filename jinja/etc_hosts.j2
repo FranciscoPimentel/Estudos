@@ -1,0 +1,3 @@
+{% for host in groups['redis'] %}
+{{ hostvars[host]['ansible_host'] }} {{ hostvars[host]['ansible_facts']['hostname'] }}
+{% endfor %}
