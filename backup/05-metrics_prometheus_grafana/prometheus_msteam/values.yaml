@@ -1,0 +1,36 @@
+replicaCount: 1
+image:
+  repository: quay.io/prometheusmsteams/prometheus-msteams
+  tag: v1.5.1
+
+connectors:
+# in alertmanager, this will be used as http://prometheus-msteams:2000/bar
+- bar:  https://tcpterminal2.webhook.office.com/webhookb2/c0128a7e-935e-4844-88d4-488ac5bd0fbc@3a9a0a2c-2be4-47c7-a658-e5ef533ce4e2/IncomingWebhook/00b9b2296122445b9a369ea7d561da7d/db300727-e505-47c1-8061-b9ccd80bcf4a 
+# in alertmanager, this will be used as http://prometheus-msteams:2000/foo
+- foo:  https://tcpterminal2.webhook.office.com/webhookb2/c0128a7e-935e-4844-88d4-488ac5bd0fbc@3a9a0a2c-2be4-47c7-a658-e5ef533ce4e2/IncomingWebhook/00b9b2296122445b9a369ea7d561da7d/db300727-e505-47c1-8061-b9ccd80bcf4a 
+
+# extraEnvs is useful for adding extra environment variables such as proxy settings
+container:
+  additionalArgs:
+    - -debug
+
+# Enable metrics for prometheus operator
+metrics:
+  serviceMonitor:
+    enabled: true
+    additionalLabels:
+      release: prometheus # change this accordingly
+    scrapeInterval: 30s
+
+route:
+  group_by: ['alertname']
+  group_interval: 30s
+  repeat_interval: 30s
+  group_wait: 30s
+  receiver: 'prometheus-msteams'
+
+receivers:
+- name: 'prometheus-msteams'
+  webhook_configs: # https://prometheus.io/docs/alerting/configuration/#webhook_config 
+  - send_resolved: true
+    url: 'http://localhost:2000/alertmanager' # the prometheus-msteams proxy           

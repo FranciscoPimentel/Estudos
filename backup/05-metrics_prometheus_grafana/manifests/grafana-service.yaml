@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    pkgs.k8s.io/component: grafana
+    pkgs.k8s.io/name: grafana
+    pkgs.k8s.io/part-of: kube-prometheus
+    pkgs.k8s.io/version: 10.3.1
+  name: grafana
+  namespace: monitoring
+spec:
+  ports:
+  - name: http
+    port: 3000
+    targetPort: http
+  selector:
+    pkgs.k8s.io/component: grafana
+    pkgs.k8s.io/name: grafana
+    pkgs.k8s.io/part-of: kube-prometheus

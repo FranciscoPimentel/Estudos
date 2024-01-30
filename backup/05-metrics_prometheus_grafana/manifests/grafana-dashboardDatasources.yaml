@@ -1,0 +1,27 @@
+apiVersion: v1
+kind: Secret
+metadata:
+  labels:
+    pkgs.k8s.io/component: grafana
+    pkgs.k8s.io/name: grafana
+    pkgs.k8s.io/part-of: kube-prometheus
+    pkgs.k8s.io/version: 10.3.1
+  name: grafana-pvc
+  namespace: monitoring
+stringData:
+  datasources.yaml: |-
+    {
+        "apiVersion": 1,
+        "datasources": [
+            {
+                "access": "proxy",
+                "editable": false,
+                "name": "prometheus",
+                "orgId": 1,
+                "type": "prometheus",
+                "url": "http://prometheus-k8s.monitoring.svc:9090",
+                "version": 1
+            }
+        ]
+    }
+type: Opaque

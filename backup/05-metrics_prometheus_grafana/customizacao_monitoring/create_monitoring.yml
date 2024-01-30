@@ -1,0 +1,30 @@
+#https://github.com/kubernetes-sigs/metrics-server/tree/master/charts/metrics-server
+- name: "Criando manifest e aplicando configurações monitoramento"
+  hosts: localhost
+  become: no
+  connection: local
+  tasks:
+
+  - name: 1 - Create manifest de monitoramento 
+    shell: export KUBECONFIG=~/.kube/{{ cluster_name }}; kubectl create -f ./manifests/setup
+
+  - name: 2 - Aplicando/upgrade manifest  
+    shell: export KUBECONFIG=~/.kube/{{ cluster_name }}; kubectl apply -f ./manifests   
+    tags:
+      -  upgrade
+
+# Add Metrics para HPA 
+  - name: 3.1 - Instalação/Upgrade Metrics Server   
+    shell: |
+      export KUBECONFIG=~/.kube/{{ cluster_name }}
+      kubectl apply -f high-availability-1.21+.yaml
+    register: out_put       
+    tags:
+      -  install
+
+  - name: 3.2 - Mensagem se o upgrade foi feito com sucesso.  
+    debug:
+      msg: "{{ out_put }}"     
+    tags:
+      -  install
+

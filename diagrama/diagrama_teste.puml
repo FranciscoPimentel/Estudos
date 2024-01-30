@@ -1,0 +1,139 @@
+ 
+@startuml qa
+!theme plain
+
+scale max 2048 width
+skinparam Linetype ortho
+skinparam nodesep 10
+skinparam ranksep 10
+
+skinparam ArrowThickness 2
+
+' skinparam rectangle {
+'     RoundCorner 20
+'     RectangleBorderThickness 25
+' }
+
+!define SPRITESURL https://raw.githubusercontent.com/plantuml-stdlib/gilbarbara-plantuml-sprites/v1.1/sprites
+!include <logos/kubernetes>
+!include <cloudinsight/haproxy>
+!include <cloudinsight/redis>
+!include <cloudinsight/rabbitmq>
+!include <cloudinsight/mongodb>
+!include <cloudinsight/elasticsearch>
+!includeurl SPRITESURL/consul.puml
+!include <kubernetes/k8s-sprites-unlabeled-25pct>
+
+title: "**Diagrama ambiente QA**"
+footer Diagrama QA
+
+top to bottom direction
+
+rectangle "<$haproxy,color=#7dabf5>\nHaproxy -> K8s" as haproxy_k8s  {
+  component "**haproxy-qa-1**\nIP.: 10.41.12.118" as haproxy-qa-1{
+  }
+  component "**haproxy-qa-2**\nIP.: 10.41.12.119" as haproxy-qa-2{
+  }
+}
+
+rectangle "<$kubernetes,color=#004DEE>\nKubernetes" as k8s_cluster {
+  rectangle "<$master,color=#004DEE>\nControlPlanes" as k8s_controlplane{
+    component "**ctrplane-qa-1**\nIP.: 10.41.12.107" as ctrplane-qa-1 {
+    }
+    component "**ctrplane-qa-2**\nIP.: 10.41.12.108" as ctrplane-qa-2 {
+    }
+    component "**ctrplane-qa-3**\nIP.: 10.41.12.109" as ctrplane-qa-3 {
+    }
+  }
+  rectangle "<$node,color=#004DEE>\nWorkers" as workers {
+    component "**worker-qa-1**\nIP.: 10.41.12.110" as worker-qa-1 {
+    }
+    component "**worker-qa-2**\nIP.: 10.41.12.111" as worker-qa-2 {
+    }
+    component "**worker-qa-3**\nIP.: 10.41.12.112" as worker-qa-3 {
+    }
+    component "**worker-qa-4**\nIP.: 10.41.12.113" as worker-qa-4 {
+    }
+    component "**worker-qa-5**\nIP.: 10.41.12.114" as worker-qa-5 {
+    }
+    component "**worker-qa-6**\nIP.: 10.41.12.115" as worker-qa-6 {
+    }
+    component "**worker-qa-7**\nIP.: 10.41.12.116" as worker-qa-7 {
+    }
+    component "**worker-qa-8**\nIP.: 10.41.12.117" as worker-qa-8 {
+    }
+  }  
+  
+  haproxy_k8s 0-down-> k8s_cluster
+  k8s_controlplane 0-down-> workers
+} 
+
+rectangle "<$haproxy,color=#7dabf5>\nHaproxy -> SRVs" as haproxy_aux  {
+  component "**app-haproxy-qa-1**\nIP.: 10.41.12.204" as app-haproxy-qa-1 {
+  }
+  component "**app-haproxy-qa-2**\nIP.: 10.41.12.205" as app-haproxy-qa-2 {
+  }
+}
+
+rectangle "services_load" as srv_hprx { 
+    
+  rectangle "<$rabbitmq,color=#FFAA33>\nRabbitMQ" as rabbitmq_cluster {
+    
+    component "**rabbitmqqa1**\nIP.: 10.41.12.132" as rabbitmqqa1 {
+    }
+    
+    component "**rabbitmqqa2**\nIP.: 10.41.12.133" as rabbitmqqa2 {
+    }
+    
+    component "**rabbitmqqa3**\nIP.: 10.41.12.134" as rabbitmqqa3 {
+    }
+  }
+    
+  rectangle "<$redis,color=#FF0000>\nRedis" as redis_cluster {
+    
+    component "**redis-qa-1**\nIP.: 10.41.12.206" as redis-qa-1 {
+    }        
+    
+    component "**redis-qa-2**\nIP.: 10.41.12.207" as redis-qa-2 {
+    }        
+    
+    component "**redis-qa-3**\nIP.: 10.41.12.208" as redis-qa-3 {
+    }        
+  } 
+
+  k8s_cluster 0-down-> haproxy_aux
+  haproxy_aux 0-down-> srv_hprx
+}
+
+rectangle "services" as srv {
+    
+  rectangle "<$mongodb,color=#00FF00>\nMongoDB" as mongodb_infra {
+    
+    component "**mongodb-qa-1**\nIP.: 10.41.12.135" as mongodb-qa-1 {
+    } 
+    
+    component "**mongodb-qa-2**\nIP.: 10.41.12.136" as mongodb-qa-2 {
+    } 
+    
+    component "**mongodb-qa-3**\nIP.: 10.41.12.137" as mongodb-qa-3 {
+    } 
+  }
+    
+  rectangle "<$elasticsearch,color=#004DBC>\nOpenSearch" as opensearch_ctosdev {
+    
+    component "**opensearch-data-1**\nIP.: 10.41.12.72" as opensearch-data-1 {   
+    }
+    
+    component "**opensearch-data-2**\nIP.: 10.41.12.58" as opensearch-data-2 {   
+    }
+    
+    component "**opensearch-dash-coord**\nIP.: 10.41.12.59" as opensearch-dash-coord {   
+    }
+    
+    component "**opensearch-manager**\nIP.: 10.41.12.66" as opensearch-manager {   
+    }
+  }
+  k8s_cluster 0-down-> srv 
+}    
+
+ 

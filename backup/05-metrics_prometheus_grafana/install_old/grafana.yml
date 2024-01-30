@@ -1,0 +1,301 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  annotations:
+    checksum/grafana-config: e0a1bb628397c799f4e81b4304892bd4
+    checksum/grafana-dashboardproviders: 0cf905b49bb45cb0005e0513f8464cb8
+    checksum/grafana-pvc: 9f85c1148cf8e16cc532e7f2e866b306
+  creationTimestamp: "2023-05-08T18:35:33Z"
+  generateName: grafana-7d5b945fb5-
+  labels:
+    app.kubernetes.io/component: grafana
+    app.kubernetes.io/name: grafana
+    app.kubernetes.io/part-of: kube-prometheus
+    app.kubernetes.io/version: 10.3.1
+    pod-template-hash: 7d5b945fb5
+  name: grafana-7d5b945fb5-bqhrp
+  namespace: monitoring
+  ownerReferences:
+  - apiVersion: apps/v1
+    blockOwnerDeletion: true
+    controller: true
+    kind: ReplicaSet
+    name: grafana-7d5b945fb5
+    uid: 582d6743-6492-4e46-a847-6e0772c65fb4
+  resourceVersion: "2887861"
+  uid: 4ffa8fcc-fd06-4a74-b583-6f1a824bd5d8
+spec:
+  automountServiceAccountToken: false
+  containers:
+  - image: grafana/grafana:10.3.1
+    imagePullPolicy: IfNotPresent
+    name: grafana
+    ports:
+    - containerPort: 3000
+      name: http
+      protocol: TCP
+    readinessProbe:
+      failureThreshold: 3
+      httpGet:
+        path: /api/health
+        port: http
+        scheme: HTTP
+      periodSeconds: 10
+      successThreshold: 1
+      timeoutSeconds: 1
+    resources:
+      limits:
+        cpu: 200m
+        memory: 200Mi
+      requests:
+        cpu: 100m
+        memory: 100Mi
+    securityContext:
+      allowPrivilegeEscalation: false
+      capabilities:
+        drop:
+        - ALL
+      readOnlyRootFilesystem: true
+    terminationMessagePath: /dev/termination-log
+    terminationMessagePolicy: File
+    volumeMounts:
+    - mountPath: /var/lib/grafana
+      name: grafana-storage
+    - mountPath: /etc/grafana/provisioning/datasources
+      name: grafana-pvc
+    - mountPath: /etc/grafana/provisioning/dashboards
+      name: grafana-dashboards
+    - mountPath: /tmp
+      name: tmp-plugins
+    - mountPath: /grafana-dashboard-definitions/0/alertmanager-overview
+      name: grafana-dashboard-alertmanager-overview
+    - mountPath: /grafana-dashboard-definitions/0/apiserver
+      name: grafana-dashboard-apiserver
+    - mountPath: /grafana-dashboard-definitions/0/cluster-total
+      name: grafana-dashboard-cluster-total
+    - mountPath: /grafana-dashboard-definitions/0/controller-manager
+      name: grafana-dashboard-controller-manager
+    - mountPath: /grafana-dashboard-definitions/0/grafana-overview
+      name: grafana-dashboard-grafana-overview
+    - mountPath: /grafana-dashboard-definitions/0/k8s-resources-cluster
+      name: grafana-dashboard-k8s-resources-cluster
+    - mountPath: /grafana-dashboard-definitions/0/k8s-resources-namespace
+      name: grafana-dashboard-k8s-resources-namespace
+    - mountPath: /grafana-dashboard-definitions/0/k8s-resources-node
+      name: grafana-dashboard-k8s-resources-node
+    - mountPath: /grafana-dashboard-definitions/0/k8s-resources-pod
+      name: grafana-dashboard-k8s-resources-pod
+    - mountPath: /grafana-dashboard-definitions/0/k8s-resources-workload
+      name: grafana-dashboard-k8s-resources-workload
+    - mountPath: /grafana-dashboard-definitions/0/k8s-resources-workloads-namespace
+      name: grafana-dashboard-k8s-resources-workloads-namespace
+    - mountPath: /grafana-dashboard-definitions/0/kubelet
+      name: grafana-dashboard-kubelet
+    - mountPath: /grafana-dashboard-definitions/0/namespace-by-pod
+      name: grafana-dashboard-namespace-by-pod
+    - mountPath: /grafana-dashboard-definitions/0/namespace-by-workload
+      name: grafana-dashboard-namespace-by-workload
+    - mountPath: /grafana-dashboard-definitions/0/node-cluster-rsrc-use
+      name: grafana-dashboard-node-cluster-rsrc-use
+    - mountPath: /grafana-dashboard-definitions/0/node-rsrc-use
+      name: grafana-dashboard-node-rsrc-use
+    - mountPath: /grafana-dashboard-definitions/0/nodes-darwin
+      name: grafana-dashboard-nodes-darwin
+    - mountPath: /grafana-dashboard-definitions/0/nodes
+      name: grafana-dashboard-nodes
+    - mountPath: /grafana-dashboard-definitions/0/persistentvolumesusage
+      name: grafana-dashboard-persistentvolumesusage
+    - mountPath: /grafana-dashboard-definitions/0/pod-total
+      name: grafana-dashboard-pod-total
+    - mountPath: /grafana-dashboard-definitions/0/prometheus-remote-write
+      name: grafana-dashboard-prometheus-remote-write
+    - mountPath: /grafana-dashboard-definitions/0/prometheus
+      name: grafana-dashboard-prometheus
+    - mountPath: /grafana-dashboard-definitions/0/proxy
+      name: grafana-dashboard-proxy
+    - mountPath: /grafana-dashboard-definitions/0/scheduler
+      name: grafana-dashboard-scheduler
+    - mountPath: /grafana-dashboard-definitions/0/workload-total
+      name: grafana-dashboard-workload-total
+    - mountPath: /etc/grafana
+      name: grafana-config
+  dnsPolicy: ClusterFirst
+  enableServiceLinks: true
+  nodeName: k8s-qa2-node3
+  nodeSelector:
+    kubernetes.io/os: linux
+  preemptionPolicy: PreemptLowerPriority
+  priority: 0
+  restartPolicy: Always
+  schedulerName: default-scheduler
+  securityContext:
+    fsGroup: 65534
+    runAsNonRoot: true
+    runAsUser: 65534
+  serviceAccount: grafana
+  serviceAccountName: grafana
+  terminationGracePeriodSeconds: 30
+  tolerations:
+  - effect: NoExecute
+    key: node.kubernetes.io/not-ready
+    operator: Exists
+    tolerationSeconds: 300
+  - effect: NoExecute
+    key: node.kubernetes.io/unreachable
+    operator: Exists
+    tolerationSeconds: 300
+  volumes:
+  - emptyDir: {}
+    name: grafana-storage
+  - name: grafana-pvc
+    secret:
+      defaultMode: 420
+      secretName: grafana-pvc
+  - configMap:
+      defaultMode: 420
+      name: grafana-dashboards
+    name: grafana-dashboards
+  - emptyDir:
+      medium: Memory
+    name: tmp-plugins
+  - configMap:
+      defaultMode: 420
+      name: grafana-dashboard-alertmanager-overview
+    name: grafana-dashboard-alertmanager-overview
+  - configMap:
+      defaultMode: 420
+      name: grafana-dashboard-apiserver
+    name: grafana-dashboard-apiserver
+  - configMap:
+      defaultMode: 420
+      name: grafana-dashboard-cluster-total
+    name: grafana-dashboard-cluster-total
+  - configMap:
+      defaultMode: 420
+      name: grafana-dashboard-controller-manager
+    name: grafana-dashboard-controller-manager
+  - configMap:
+      defaultMode: 420
+      name: grafana-dashboard-grafana-overview
+    name: grafana-dashboard-grafana-overview
+  - configMap:
+      defaultMode: 420
+      name: grafana-dashboard-k8s-resources-cluster
+    name: grafana-dashboard-k8s-resources-cluster
+  - configMap:
+      defaultMode: 420
+      name: grafana-dashboard-k8s-resources-namespace
+    name: grafana-dashboard-k8s-resources-namespace
+  - configMap:
+      defaultMode: 420
+      name: grafana-dashboard-k8s-resources-node
+    name: grafana-dashboard-k8s-resources-node
+  - configMap:
+      defaultMode: 420
+      name: grafana-dashboard-k8s-resources-pod
+    name: grafana-dashboard-k8s-resources-pod
+  - configMap:
+      defaultMode: 420
+      name: grafana-dashboard-k8s-resources-workload
+    name: grafana-dashboard-k8s-resources-workload
+  - configMap:
+      defaultMode: 420
+      name: grafana-dashboard-k8s-resources-workloads-namespace
+    name: grafana-dashboard-k8s-resources-workloads-namespace
+  - configMap:
+      defaultMode: 420
+      name: grafana-dashboard-kubelet
+    name: grafana-dashboard-kubelet
+  - configMap:
+      defaultMode: 420
+      name: grafana-dashboard-namespace-by-pod
+    name: grafana-dashboard-namespace-by-pod
+  - configMap:
+      defaultMode: 420
+      name: grafana-dashboard-namespace-by-workload
+    name: grafana-dashboard-namespace-by-workload
+  - configMap:
+      defaultMode: 420
+      name: grafana-dashboard-node-cluster-rsrc-use
+    name: grafana-dashboard-node-cluster-rsrc-use
+  - configMap:
+      defaultMode: 420
+      name: grafana-dashboard-node-rsrc-use
+    name: grafana-dashboard-node-rsrc-use
+  - configMap:
+      defaultMode: 420
+      name: grafana-dashboard-nodes-darwin
+    name: grafana-dashboard-nodes-darwin
+  - configMap:
+      defaultMode: 420
+      name: grafana-dashboard-nodes
+    name: grafana-dashboard-nodes
+  - configMap:
+      defaultMode: 420
+      name: grafana-dashboard-persistentvolumesusage
+    name: grafana-dashboard-persistentvolumesusage
+  - configMap:
+      defaultMode: 420
+      name: grafana-dashboard-pod-total
+    name: grafana-dashboard-pod-total
+  - configMap:
+      defaultMode: 420
+      name: grafana-dashboard-prometheus-remote-write
+    name: grafana-dashboard-prometheus-remote-write
+  - configMap:
+      defaultMode: 420
+      name: grafana-dashboard-prometheus
+    name: grafana-dashboard-prometheus
+  - configMap:
+      defaultMode: 420
+      name: grafana-dashboard-proxy
+    name: grafana-dashboard-proxy
+  - configMap:
+      defaultMode: 420
+      name: grafana-dashboard-scheduler
+    name: grafana-dashboard-scheduler
+  - configMap:
+      defaultMode: 420
+      name: grafana-dashboard-workload-total
+    name: grafana-dashboard-workload-total
+  - name: grafana-config
+    secret:
+      defaultMode: 420
+      secretName: grafana-config
+status:
+  conditions:
+  - lastProbeTime: null
+    lastTransitionTime: "2023-05-08T18:35:33Z"
+    status: "True"
+    type: Initialized
+  - lastProbeTime: null
+    lastTransitionTime: "2023-05-08T18:35:53Z"
+    status: "True"
+    type: Ready
+  - lastProbeTime: null
+    lastTransitionTime: "2023-05-08T18:35:53Z"
+    status: "True"
+    type: ContainersReady
+  - lastProbeTime: null
+    lastTransitionTime: "2023-05-08T18:35:33Z"
+    status: "True"
+    type: PodScheduled
+  containerStatuses:
+  - containerID: containerd://670104d34d762d6effade5cf0491d14059c6ecf9db36e984e476765b18580a1a
+    image: docker.io/grafana/grafana:10.3.1
+    imageID: docker.io/grafana/grafana@sha256:1a359d92f40ef98049b1aac3e43cb4a569f5dc0e552caa883a6b6f4ae1eacded
+    lastState: {}
+    name: grafana
+    ready: true
+    restartCount: 0
+    started: true
+    state:
+      running:
+        startedAt: "2023-05-08T18:35:34Z"
+  hostIP: 10.41.6.24
+  phase: Running
+  podIP: 10.244.2.161
+  podIPs:
+  - ip: 10.244.2.161
+  qosClass: Burstable
+  startTime: "2023-05-08T18:35:33Z"

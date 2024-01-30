@@ -1,0 +1,107 @@
+@startuml {{ environment_name }}
+!theme plain
+
+scale max 2048 width
+skinparam Linetype ortho
+skinparam nodesep 10
+skinparam ranksep 10
+
+skinparam ArrowThickness 2
+
+' skinparam rectangle {
+'     RoundCorner 20
+'     RectangleBorderThickness 25
+' }
+
+!define SPRITESURL https://raw.githubusercontent.com/plantuml-stdlib/gilbarbara-plantuml-sprites/v1.1/sprites
+!include <logos/kubernetes>
+!include <cloudinsight/haproxy>
+!include <cloudinsight/redis>
+!include <cloudinsight/rabbitmq>
+!include <cloudinsight/mongodb>
+!include <cloudinsight/elasticsearch>
+!includeurl SPRITESURL/consul.puml
+
+
+title: "**teste**"
+footer Diagrama teste
+
+top to bottom direction
+
+rectangle "<$kubernetes,color=#004DEE>\nKubernetes" as k8s_cluster {
+
+    component "**master01**\nIP.: 10.41.12.74" as master01 {
+    }
+    component "**node01**\nIP.: 10.41.12.75" as node01 { 
+    }
+    component "**node01**\nIP.: 10.41.12.76" as node02 {
+    }
+    component "**node01**\nIP.: 10.41.12.77" as node03 {   
+    }
+    component "**node01**\nIP.: 10.41.12.77" as node04 {
+    }
+
+    master01 -d-> node01
+    master01 -d-> node02
+    master01 -d-> node03
+    master01 -d-> node04
+}
+
+rectangle "<$haproxy,color=#7dabf5>\nHaproxy" as haproxy {
+    component "\n**haproxy_k8s**\nIP.: 10.41.12.74" as haproxy01
+}
+
+rectangle "<$haproxy,color=#7dabf5>\nHaproxy *Aux" as haproxy_aux {
+    component "**haproxy_app**\nIP.: 10.41.12.14" as haproxyapp
+}
+
+rectangle "services_load" as srv_hprx {
+
+    rectangle "<$rabbitmq,color=#FFAA33>\nRabbitMQ" as rabbitmq_cluster {
+        component  "**rabbitmq**\nIP.: 10.41.12.18" as rabbitmq {
+        }
+    }
+    rectangle "<$redis,color=#FF0000>\nRedis" as redis_cluster {
+        component "**redis**\nIP.: 10.41.12.19" as redis {
+        }
+    }
+}
+
+rectangle "services" as srv {
+
+    rectangle "<$mongodb,color=#00FF00>\nMongoDB" as mongodb_infra {
+        component "**mongodb**\nIP.: 10.41.12.15" as mongodb {        
+        }
+    }
+
+    rectangle "<$elasticsearch,color=#004DBC>\nOpenSearch" as opensearch_ctosdev {
+        component "**Opensearch**\nIP.: 10.41.12.17" as elasticsearch {
+        }
+    }
+
+    rectangle "<$consul,color=darkviolet>\nConsul" {
+        component "**Consul**\nIP.: 10.41.12.17" as consul {
+        }
+    }
+}
+
+k8s_cluster <-up--0 haproxy
+k8s_cluster 0-down--> haproxy_aux
+k8s_cluster 0-down-> srv
+haproxy_aux 0-right-> srv_hprx
+
+'haproxy_aux -right-> rabbitmq_cluster
+' haproxy -d-----> k8s_cluster
+' k8s_cluster -r----> haproxy_aux
+' haproxy 0-right-> haproxy_aux
+' haproxy_aux 0-right-> rabbitmq_cluster
+' haproxy_aux 0-right-> redis_cluster
+
+' k8s_cluster -down---> haproxy_aux
+' k8s_cluster -down---> srv
+' haproxy -d--> k8s_cluster
+' haproxy_aux --[hidden]--> aux    
+'haproxyapp .down...> aux
+
+@enduml
+

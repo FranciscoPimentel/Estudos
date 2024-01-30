@@ -1,0 +1,97 @@
+
+
+# helm install prometheus prometheus-community/prometheus --set server.persistentVolume.storageClass=nfs-teste --set alertmanager.persistentVolume.storageClass=nfs-teste
+
+https://linuxhandbook.com/kubectl-label-node/  
+
+kubectl label nodes worker-1 topology.tcp.com.br/integra.consumer=internal
+
+somente nos workers 
+topology.tcp.com.br/global.api: internal
+topology.tcp.com.br/global.consumer: internal
+topology.tcp.com.br/portal.api: internal
+topology.tcp.com.br/portal.consumer: internal
+topology.tcp.com.br/integra.api: internal
+topology.tcp.com.br/integra.consumer: internal
+
+
+  labels:
+    beta.kubernetes.io/arch: amd64
+    beta.kubernetes.io/os: linux
+    k8slens-edit-resource-version: v1
+    kubernetes.io/arch: amd64
+    kubernetes.io/hostname: worker-qa-1
+    kubernetes.io/os: linux
+    topology.tcp.com.br/global.api: north
+    topology.tcp.com.br/inhelm repo updatetegra.api: allowed
+    topology.tcp.com.br/integra.consumer: allowed
+    topology.tcp.com.br/portal.api: allowed
+    topology.tcp.com.br/portal.consumer: allowed
+
+worker-1:
+    topology.tcp.com.br/global.api: north
+    topology.tcp.com.br/integra.api: allowed
+    topology.tcp.com.br/integra.consumer: allowed
+    topology.tcp.com.br/portal.api: allowed
+    topology.tcp.com.br/portal.consumer: allowed
+
+
+NAMESPACE
+agendamento
+armazem
+kubectl create namespace automacao
+kubectl create namespace cadastro
+kubectl create namespace consulta-geral
+kubectl create namespace core
+kubectl create namespace data-process
+kubectl create namespace equipamentos
+kubectl create namespace ferrovia
+kubectl create namespace front-ends
+kubectl create namespace integracoes
+kubectl create namespace kbt
+kubectl create namespace logistica
+kubectl create namespace monitoramento
+kubectl create namespace operacoes-internas
+kubectl create namespace portal
+kubectl create namespace reefer-api
+kubectl create namespace regulatorio
+kubectl create namespace salesforce
+kubectl create namespace security
+kubectl create namespace workflow 
+
+PVC 
+agendamento
+armazem
+automacao
+cadastro
+consulta-geral
+core
+data-process
+equipamentos
+ferrovia
+front-ends
+front-ends-development
+integracoes
+kbt
+logistica
+monitoramento
+operacoes-internas
+portal
+reefer-api
+regulatorio
+salesforce
+security
+workflow 
+
+https://github.com/badtuxx/DescomplicandoPrometheus
+
+https://www.linode.com/docs/guides/how-to-install-prometheus-and-grafana-on-ubuntu/
+https://gist.github.com/Warns/4e9845d2b70d370fbd82cfa02ec39b5c
+helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
+helm repo update
+helm install prometheus prometheus-community/kube-prometheus-stack
+
+helm install prometheus prometheus-community/prometheus \
+--namespace monitoring \
+--set alertmanager.persistentVolume.storageClass="nfs-teste" \
+--set server.persistentVolume.storageClass="nfs-teste"

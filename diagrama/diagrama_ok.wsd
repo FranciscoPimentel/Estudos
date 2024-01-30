@@ -1,0 +1,130 @@
+@startuml ctosdev
+!theme plain
+
+scale max 2048 width
+skinparam Linetype ortho
+skinparam nodesep 10
+skinparam ranksep 10
+
+skinparam ArrowThickness 2
+
+' skinparam rectangle {
+'     RoundCorner 20
+'     RectangleBorderThickness 25
+' }
+
+!define SPRITESURL https://raw.githubusercontent.com/plantuml-stdlib/gilbarbara-plantuml-sprites/v1.1/sprites
+!include <logos/kubernetes>
+!include <cloudinsight/haproxy>
+!include <cloudinsight/redis>
+!include <cloudinsight/rabbitmq>
+!include <cloudinsight/mongodb>
+!include <cloudinsight/elasticsearch>
+!includeurl SPRITESURL/consul.puml
+
+
+title: "**Diagrama ambiente CTOSDEV**"
+footer Diagrama CTOSDEV
+
+top to bottom direction
+
+rectangle "<$haproxy,color=#7dabf5>\nHaproxy -> K8s" as haproxy_k8s  {
+  component "**haproxy-ctos-1**\nIP.: 10.41.12.20" as haproxy-ctos-1{
+  }
+}
+
+
+rectangle "<$kubernetes,color=#004DEE>\nKubernetes" as k8s_cluster {
+  rectangle "ControlPlanes " as k8s_controlplane{
+      component "**ctrplane-ctos2-1**\nIP.: 10.41.12.74" as ctrplane-ctos2-1 {
+   }
+  
+  }
+
+  rectangle "Workers" as workers {
+      component "**worker-ctos-1**\nIP.: 10.41.12.75" as worker-ctos-1{
+  }
+      component "**worker-ctos-2**\nIP.: 10.41.12.76" as worker-ctos-2{
+  }
+      component "**worker-ctos-3**\nIP.: 10.41.12.77" as worker-ctos-3{
+  }
+      component "**worker-ctos-4**\nIP.: 10.41.12.78" as worker-ctos-4{
+  }
+  
+  }
+  haproxy_k8s 0-down-> k8s_cluster
+  k8s_controlplane 0-down-> workers
+}  
+
+
+rectangle "<$haproxy,color=#7dabf5>\nHaproxy -> SRVs" as haproxy_aux  {
+  component "**app-haproxy-ctos-1**\nIP.: 10.41.12.14" as app-haproxy-ctos-1 {
+  }
+}
+
+rectangle "services_load" as srv_hprx { 
+    
+  rectangle "<$rabbitmq,color=#FFAA33>\nRabbitMQ" as rabbitmq_cluster {
+    
+    component "**rabbitmq-ctosdev-1**\nIP.: 10.41.12.18" as rabbitmq-ctosdev-1 {
+    }
+    
+  }
+    
+  rectangle "<$redis,color=#FF0000>\nRedis" as redis_cluster {
+    
+    component "**redis-ctosdev**\nIP.: 10.41.12.19" as redis-ctosdev {
+    }        
+    } 
+    
+
+  k8s_cluster 0-down-> haproxy_aux
+  k8s_cluster 0-down-> nfs
+  haproxy_aux 0-down-> srv_hprx
+}
+
+rectangle "services" as srv {
+    
+  rectangle "<$mongodb,color=#00FF00>\nMongoDB" as mongodb_infra {
+    
+    component "**mongodb-ctosdev-1**\nIP.: 10.41.12.15" as mongodb-ctosdev-1 {
+    } 
+    
+  }
+    
+  rectangle "<$elasticsearch,color=#004DBC>\nOpenSearch" as opensearch_ctosdev {
+    
+    component "**opensearch-data-1**\nIP.: 10.41.12.16" as opensearch-data-1 {   
+    }
+    
+    component "**opensearch-dash-coord**\nIP.: 10.41.12.16" as opensearch-dash-coord {   
+    }
+    
+  }
+  k8s_cluster 0-down-> srv 
+}    
+
+
+{% macro DiagramConsul(consul) %}
+  {% if 'consul' in groups +%}
+  rectangle "<$consul,color=darkviolet>\nConsul" as consul {
+    {%- for host in groups['consul'] %}
+    component "**{{ hostvars[host]['inventory_hostname'] }}**\nIP.: {{ hostvars[host]['ansible_host'] }}" as {{ hostvars[host]['inventory_hostname'] }} { 
+    }
+    {% endfor -%}  
+  }
+  {%- endif +%}
+{%- endmacro -%} 
+
+{#{% macro DiagramStorageClass(nfs) %}#}
+  {% if 'master_k8s' in groups +%}
+  {% set location = {{ hostvars[inventory_hostname]['storageclass']['location_storage'] }} %}
+  rectangle "<$ma_file_cloud,color=#004DEE>\nStorageClass" as nfs {
+    {% for host in groups['master_k8s'] %}
+    component "**{{ hostvars[inventory_hostname]['storageclass']['name_storage'] }}-{{ location }}**\nIP.: {{ hostvars[inventory_hostname]['storageclass']['nfs_server'] }}" as {{ hostvars[inventory_hostname]['storageclass']['name_storage'] }} { 
+    }
+    {% endfor -%}  
+  }
+  {%- endif +%}
+
+  
