@@ -1,0 +1,306 @@
+# Invetário refernte ao ambinte PRDdocker
+running_localhost:
+  hosts:
+    localhost:
+  vars:
+    ansible_connection: local
+# Lista usuários iniciais, a execução é local por KUBECTL       
+    rbac_groups:
+      devops-admins:
+        - joaon
+        - josep
+        - myano
+        - gmarcelo 
+      devops-deploy:
+        - devops-deploy-azure
+      devops-support:
+        - miguel
+        - salvaro           
+      devops-readonly:
+         - dev
+
+# Servers HAPROXY
+haproxy_k8s:
+  hosts:
+    haproxy_prod_worker-1:
+      ansible_host: 10.41.5.10
+      flags:
+      - master 
+    haproxy_prod_worker-2:
+      ansible_host: 10.41.5.11
+      flags:
+      - slave
+  vars:
+    ip_virtual: 10.41.5.12
+    port_k8s: 6443
+    port_http: 80
+    port_https: 443
+    port_stats_haproxy: 1936
+    port_redis: 7000       
+# Servers HAPROXY (Redis, RabbitMQ e Consul)
+haproxy_app:
+  hosts:
+    app-haproxy-prd-1:
+      ansible_host: 10.41.5.150 
+    app-haproxy-prd-2:
+      ansible_host: 10.41.5.151 
+  vars:
+    servers_k8s: false              
+    port_http: 80
+    port_https: 443
+    port_stats_haproxy: 1936
+    domain_consul: consul-qa.tcp.com.br
+    domain_rabbitmq: rabbitmq-qa.tcp.com.br
+    domain_redis: redis-qa.tcp.com.br
+    domain_mongodb: mogodb-qa.tcp.com.br
+# Conditionals Flags -> HAPROXY 
+    ctrl_flags:
+      is_haproxy: true 
+      is_keepalived: true
+      is_server: true
+# Variáveis do sistema operacional SYSCTL -> HAPROXY       
+    sysctl_vars:
+      net.core.somaxconn: 2048  
+      net.core.netdev_max_backlog: 1000 
+      fs.file-max: 2097152 # Como configurar o limite do descritor de arquivo linux com fs.file-max
+
+#  Servers KUBERNETES 
+# Master
+master_k8s:
+  hosts:       
+    ctrplane-prd-worker-1:
+      ansible_host: 10.41.5.20
+  vars:
+# Conditionals Flags -> K8S-MASTER   
+    ctrl_flags:
+      is_k8s_server: true
+      in_k8s_master: true
+# Variáveis do sistema operacional SYSCTL -> CONTROLPLANES       
+    sysctl_vars:
+        net.ipv4.tcp_fin_timeout: 30
+        net.ipv4.tcp_tw_recycle: 1
+        net.ipv4.tcp_tw_reuse: 1
+        net.core.rmem_default: 524288
+        net.core.wmem_default: 524288
+        net.core.wmem_max: 67108864
+        net.core.rmem_max: 67108864
+        net.ipv4.tcp_rmem: 4096 87380 16777216
+        net.ipv4.tcp_wmem: 4096 87380 16777216
+        net.ipv4.ip_local_port_range: 1024 65535
+        fs.file-max: 2097152
+
+## Controlplanes
+controlplanes:
+  hosts:
+    ctrplane-prd-worker-2:
+      ansible_host: 10.41.5.21
+    ctrplane-prd-worker-3:
+      ansible_host: 10.41.5.23 
+  vars:
+# Conditionals Flags -> K8S-CONTROLPLANES    
+    ctrl_flags:
+      is_k8s_server: true
+      in_k8s_ctrl_planel: true
+# Variáveis do sistema operacional SYSCTL -> K8S-CONTROLPLANES             
+    sysctl_vars:
+        net.ipv4.tcp_fin_timeout: 30
+        net.ipv4.tcp_tw_recycle: 1
+        net.ipv4.tcp_tw_reuse: 1
+        net.core.rmem_default: 524288
+        net.core.wmem_default: 524288
+        net.core.wmem_max: 67108864
+        net.core.rmem_max: 67108864
+        net.ipv4.tcp_rmem: 4096 87380 16777216
+        net.ipv4.tcp_wmem: 4096 87380 16777216
+        net.ipv4.ip_local_port_range: 1024 65535
+        fs.file-max: 2097152      
+
+## Workers         
+workers:
+  hosts:
+    wk-prod-worker-1:
+      ansible_host: 10.41.5.33
+    wk-prod-worker-2:
+      ansible_host: 10.41.5.34
+    wk-prod-worker-3:
+      ansible_host: 10.41.5.35
+    wk-prod-worker-4:
+      ansible_host: 10.41.5.36
+    wk-prod-worker-5:
+      ansible_host: 10.41.5.37
+    wk-prod-worker-6:
+      ansible_host: 10.41.5.38
+  vars:
+# Conditionals Flags -> K8S-WORKERS    
+    ctrl_flags:
+      is_k8s_server: true 
+      is_k8s_workers: true
+      in_k8s_workers: true
+# # Variáveis do sistema operacional SYSCTL -> WORKERS    
+    sysctl_vars:
+        net.ipv4.tcp_fin_timeout: 30
+        net.ipv4.tcp_tw_recycle: 1
+        net.ipv4.tcp_tw_reuse: 1
+        net.core.rmem_default: 524288
+        net.core.wmem_default: 524288
+        net.core.wmem_max: 67108864
+        net.core.rmem_max: 67108864
+        net.ipv4.tcp_rmem: 4096 87380 16777216
+        net.ipv4.tcp_wmem: 4096 87380 16777216
+        net.ipv4.ip_local_port_range: 1024 65535
+        fs.file-max: 2097152
+
+## Server REDIS         
+redis:
+  hosts:
+    redis-prod-worker-1:
+      ansible_host: 10.41.5.43
+    redis-prod-worker-2:
+      ansible_host: 10.41.5.44
+    redis-prod-worker-3:
+      ansible_host: 10.41.5.45 
+
+# Servers OPENSEARCH 
+opensearch:
+  hosts:
+    opensearch-dash-coord:
+      ansible_host: 10.41.5.54 #VPLNX0003  
+    opensearch-manager:  
+      ansible_host: 10.41.5.55 #VPLNX0004      
+    opensearch-data-1:
+      ansible_host: 10.41.5.57 #VPLNX0006
+    opensearch-data-2:
+       ansible_host: 10.41.5.58 #VPLNX0007
+    # opensearch-manager-2:  
+    #   ansible_host: 10.41.5.56     
+  vars:
+    opensearch_vars:
+      disk_attached: /dev/sdb # Partição do Linux onde será motado os dados do serviço
+      format_disk_atached: /dev/sdb1
+      opensearch_data: /opensearch # Caminho físico onde ficará os dados do serviço OpenSearch
+      version_open: 2.9.0
+      version_dash: 2.9.0
+      version_java: 17.0.8
+      port_opensearch: 9200
+      port_dashboard: 5601
+      path_dash_crt: /etc/ssl/tls/tcp.com.br.crt
+      path_dash_rsa: /etc/ssl/tls/tcp.com.br.key
+      path_tools_opens: /home/infra/open_tools/
+      path_certs: /etc/opensearch/certs
+      domain_name: tcp.com.br
+      os_home: /opt/opensearch
+      os_plugin_bin_path: /opt/opensearch/bin/opensearch-plugin
+      os_sec_plugin_conf_path: /opt/opensearch/config/opensearch-security
+      os_sec_plugin_tools_path: /opt/opensearch/plugins/opensearch-security/tools
+      os_api_port: 9200
+      user_opensearch: devops-admins
+      user_fluentbit: devops-admins
+      pass_fluentbit: ---
+    nodes:
+      node-data-1: 10.41.5.57
+      node-data-2: 10.41.5.58
+      node-cluster_manager: 10.41.5.55
+      # node-cluster_manager-2: 10.41.5.56
+      node-coordinating:  10.41.5.54 
+# Servers Consul
+#Consul
+consul:
+  hosts:
+    consul-1:
+      ansible_host: 10.41.5.152
+    consul-2:
+      ansible_host: 10.41.5.153
+    consul-3:
+      ansible_host: 10.41.5.154     
+  vars:
+    single_nodes: false
+    hv_net_ife: ens160
+    name_datacenter: qa
+    data_dir_consul: /consul 
+    config_dir_consul: /etc/consul.d
+    version_consul: 1.17.2
+
+kubernetes:
+  children:
+    controlplanes:
+    workers:
+
+all:
+  vars:
+# Conditionals FLAGS  
+    ctrl_flags:
+      is_server: true
+      is_k8s_server: true 
+      is_k8s_workers: true
+      is_haproxy: true 
+      is_keepalived: true
+      is_ingress: true 
+      in_k8s_rbac: true
+      in_k8s_master: true   
+      in_k8s_workers: true 
+      in_k8s_ctrl_planel: true
+
+# # Conditionals FLAGS  
+    vars_kubelet:
+      evictionSoftGracePeriod: 
+        memory.available: 1m30s
+        nodefs.available: 1m
+        imagefs.available: 1m
+        nodefs.inodesFree: 1m
+        imagefs.inodesFree: 1m
+      evictionSoft:
+        memory.available: 500Mi   
+        nodefs.available: 10%
+        imagefs.available: 10%
+        nodefs.inodesFree: 10%
+        imagefs.inodesFree: 10%  
+# Variáveis globais
+    ansible_user: infra
+    ansible_ssh_private_key_file: /home/francisco/.ssh/id_rsa
+    # vault:
+    #   name: SavedCredentials
+    #   fluentbit:
+    #     user: PRD-FluentBitUser
+    #     pass: PRD-FluentBitPass
+
+# Variáveis de ambiente (environment)    
+    dns_server: 
+    - 10.41.4.58
+    ip_virtual_app: 10.41.5.165
+    cluster_name: prd-worker_config
+    environment_name: prd-worker
+    environment: prd
+    ip_virtual: 10.41.5.12
+    ip_virtual_opensearch: 10.41.5.163
+    network_pod: 10.244.0.0/16
+    port_k8s: 6443
+# Versões usadas    
+    versions:
+      version_k8s: 1.27
+      runc_version: v1.1.6
+      conteinerd_version: 1.7.10
+      container_network_version: v1.3.0
+# Variáveis de storage    
+    storageclass:
+      nfs_server: hastorageprd.tcp.com.br
+      nfs_path: /storage
+      name_storage: nfs-prd
+  children:
+    kubernetes:
+    haproxy_app:
+    haproxy_k8s:
+    redis:
+    opensearch: 
+    consul:
+
+# Alterar .BASHRC
+# _GREEN=$(tput setaf 2)
+# _BLUE=$(tput setaf 4)
+# _RED=$(tput setaf 1)
+# _RESET=$(tput sgr0)
+# _BOLD=$(tput bold)
+# _SETAB=$(tput setab 6)
+# export PS1="${_BOLD}${_RED}\h${_RED}@${_RED}\u${_} ${_BOLD}\$ ${_RED}"
+# cat<<'EOF'
+# AMBIENTE DE PRODUCAO CUIDADO 
+# EOF

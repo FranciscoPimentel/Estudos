@@ -8,7 +8,7 @@ spec:
   storageClassName: nfs-teste
   resources:
     requests:
-      storage: 2Gi
+      storage: 10Gi
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -40,6 +40,10 @@ spec:
         app.kubernetes.io/version: 10.3.1
     spec:
       automountServiceAccountToken: false
+      volumes:
+        - name: nfs-teste
+          persistentVolumeClaim:
+            claimName: grafana-pv  
       containers:
       - env: []
         image: grafana/grafana:10.3.1
