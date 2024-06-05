@@ -1,0 +1,18 @@
+- hosts: '{{ nodes  }}' #controlplanes, workers,master_k8s
+  name: Playbook name 01-k8s_install.yml, ele instala o Kubernetes, Containerd, runc (runtime) e efetua as configurações.
+  become: yes
+  tasks:
+# 1 - Preparando o sistema operacional
+  - name: Template a file to /etc/file.conf
+    ansible.builtin.template:
+      src: create_user.j2
+      dest: /tmp/create_user.sh
+      owner: root
+      group: root
+      mode: '0644'
+
+  - name: 13 - CentOS - Aplicando as configurações do Sistema Operacional
+    shell: bash /tmp/create_user.sh
+
+  - name: 13 - CentOS - Aplicando as configurações do Sistema Operacional
+    shell: sysctl -w net.ipv4.icmp_echo_ignore_all=0
