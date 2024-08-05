@@ -1,0 +1,111 @@
+- hosts: opensearch_servers
+  name:  Script de inicio de instalação do OpenSearch 
+  become: yes
+  tasks:
+
+# OpenSearch é um mecanismo de pesquisa e análise distribuído baseado no Apache Lucene.
+
+    - name: 1.1 - Adicionando opensearh ao group de usuários 
+      ansible.builtin.group:
+        name: opensearch
+        state: present
+
+    - name: 1.2 - Create user OPENSEARCH no Sistema Operacional
+      ansible.builtin.user: 
+        name: opensearch       
+        uid: 1001 
+        group: opensearch
+        shell: /bin/bash 
+    - shell:
+        usermod -aG opensearch opensearch
+      tags: 
+        - usercreate
+
+    - name: 2.1 - Create a directory HOME para usuário OPENSEARCH
+      ansible.builtin.file:
+        path: /home/opensearch
+        state: directory
+        owner: opensearch
+        group: opensearch
+        mode: '0750'
+
+    - name: 2.2 - Create pasta que será o DATA da aplicação OPENSEARCH
+      ansible.builtin.file:
+        path: /opensearch
+        state: directory
+        owner: opensearch
+        group: opensearch
+        mode: '0750'
+
+    - name: 2.3 - Create directory de logs do OPENSEARCH
+      ansible.builtin.file:
+        path: /var/log/opensearch
+        state: directory
+        owner: opensearch
+        group: opensearch
+        mode: '0750'                
+
+    - name: 2.4 - Instalação OpenSearch dependencias
+      when: ansible_facts['os_family'] == "Debian"       
+      shell: |
+        apt-get update && sudo apt-get -y install lsb-release ca-certificates curl gnupg2
+
+    - name: Generate password
+      when: 
+        - is_primary
+      ansible.builtin.set_fact:
+        admin_password: "{{ lookup('community.general.random_string', length=18,special=false ) }}"
+      register: admin_password 
+      tags:
+        - password
+
+    - name: Verify the generate password
+      when: 
+        - is_primary
+      debug:
+        var: admin_password 
+      tags:
+        - password
+
+    - name: Salvando senha 
+      become: no
+      when: 
+        - is_primary
+      shell: echo "{{ admin_password }}" > /tmp/password
+      delegate_to: localhost 
+      tags:
+        - password
+
+    - name: 3 - Instalação OpenSearch DEBIAN 
+      when: ansible_facts['os_family'] == "Debian"   
+      shell: |
+        wget https://artifacts.opensearch.org/releases/bundle/opensearch/{{ opensearch_vars.version_open }}/opensearch-{{ opensearch_vars.version_open }}-linux-x64.deb -P /home/opensearch
+        env OPENSEARCH_INITIAL_ADMIN_PASSWORD={{ admin_password }} dpkg -i /home/opensearch/opensearch-{{ opensearch_vars.version_open }}-linux-x64.deb
+      tags:
+        - install2
+
+    - name: 3.1 - Adição repositorio para a instalação OpenSearch REDHAT 
+      when: ansible_facts['os_family'] == "RedHat" 
+      shell: |
+        curl -SL https://artifacts.opensearch.org/releases/bundle/opensearch/{{ opensearch_vars.version_repo }}.x/opensearch-{{ opensearch_vars.version_repo }}.x.repo -o /etc/yum.repos.d/opensearch-2.x.repo
+        yum -y clean all
+        yum -y repolist
+        yum -y list opensearch --showduplicates
+      tags:
+        - centos2
+
+    - name: 3.2 - Instalação Opensearch 
+      shell:
+        env OPENSEARCH_INITIAL_ADMIN_PASSWORD={{ admin_password }} yum -y install 'opensearch-{{ opensearch_vars['version_open'] }}'
+      tags:
+        - centos23
+
+    - name: 4 - Create a directory para armazenar os certificados
+      ansible.builtin.file:
+        path: /etc/opensearch/certs
+        state: directory
+        owner: opensearch
+        group: opensearch
+        mode: '0700'
+      tags: 
+        - centos23

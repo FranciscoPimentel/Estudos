@@ -1,0 +1,29 @@
+frontend rundeck_httpd
+  bind :80
+  bind :443 ssl crt /etc/ssl/private/tcp.com.br.pem
+  http-request redirect scheme https unless { ssl_fc }
+  mode tcp
+  default_backend rundeck_httpd
+  option tcplog
+backend rundeck_httpd
+  balance roundrobin
+  mode tcp
+  server master 10.41.9.200:80 check
+
+
+
+systemctl restart haproxy
+haproxy -f  /etc/haproxy/haproxy.cfg -c
+
+
+frontend rundeck_httpd
+  bind 10.41.9.200:80
+  bind :443 ssl crt /etc/ssl/private/tcp.com.br.pem
+  http-request redirect scheme https unless { ssl_fc }
+  mode tcp
+  default_backend rundeck_httpd
+  option tcplog
+backend rundeck_httpd
+  balance roundrobin
+  mode tcp
+  server master 10.41.9.200:80 check

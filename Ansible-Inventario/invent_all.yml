@@ -7,133 +7,133 @@ running_localhost:
 haproxy:
   hosts:
     haproxy-goharbor-1:
-      ansible_host: 10.41.9.15 
-    haproxy-k8s-interno-1:
-      ansible_host: 10.41.5.10
-    haproxy-k8s-interno-2:
-      ansible_host: 10.41.5.11
-    haproxy-consul-rabbit-1:
-      ansible_host: 10.41.5.150
-    haproxy-consul-rabbit-2:
-      ansible_host: 10.41.5.150    
-    haproxy-k8s-external-1:
-      ansible_host: 10.41.5.128          
-    haproxy-k8s-external-2:
-      ansible_host: 10.41.5.129     
-    haproxy-rabbit-gate-1:
-      ansible_host: 10.41.5.166     
-    haproxy-rabbit-gate-2:
-      ansible_host: 10.41.5.167                 
+      ansible_host: 10.41.13.212
+    # haproxy-k8s-interno-1:
+    #   ansible_host: 10.41.5.10
+    # haproxy-k8s-interno-2:
+    #   ansible_host: 10.41.5.11
+    # haproxy-consul-rabbit-1:
+    #   ansible_host: 10.41.5.150
+    # haproxy-consul-rabbit-2:
+    #   ansible_host: 10.41.5.151    
+    # haproxy-k8s-external-1:
+    #   ansible_host: 10.41.5.128          
+    # haproxy-k8s-external-2:
+    #   ansible_host: 10.41.5.129     
+    # haproxy-rabbit-gate-1:
+    #   ansible_host: 10.41.5.166     
+    # haproxy-rabbit-gate-2:
+    #   ansible_host: 10.41.5.167                 
 controlplanes:
   hosts:       
     ctrplane-interno-1:
-      ansible_host: 10.41.5.20
-    ctrplane-interno-2:
-      ansible_host: 10.41.5.21
-    ctrplane-interno-3:
-      ansible_host: 10.41.5.23
-    ctrplane-externo-1:
-      ansible_host: 10.41.5.130
-    ctrplane-externo-2:
-      ansible_host: 10.41.5.131
-    ctrplane-externo-3:
-      ansible_host: 10.41.5.132
+      ansible_host: 10.41.13.213
+    # ctrplane-interno-2:
+    #   ansible_host: 10.41.5.21
+    # ctrplane-interno-3:
+    #   ansible_host: 10.41.5.23
+    # ctrplane-externo-1:
+    #   ansible_host: 10.41.5.130
+    # ctrplane-externo-2:
+    #   ansible_host: 10.41.5.131
+    # ctrplane-externo-3:
+    #   ansible_host: 10.41.5.132
 workers:
   hosts:
     worker-prd-1:
-      ansible_host: 10.41.5.33
-    worker-prd-2:
-      ansible_host: 10.41.5.34
-    worker-prd-3:
-      ansible_host: 10.41.5.35
-    worker-prd-4:
-      ansible_host: 10.41.5.36
-    worker-prd-5:
-      ansible_host: 10.41.5.37
-    worker-prd-6:
-      ansible_host: 10.41.5.38
-    worker-prd-7:
-      ansible_host: 10.41.5.71
-    worker-prd-8:
-      ansible_host: 10.41.5.73
-    worker-prd-externo-1:
-      ansible_host: 10.41.5.133
-    worker-prd-externo-2:
-      ansible_host: 10.41.5.134
-    worker-prd-externo-3:
-      ansible_host: 10.41.5.135
-    worker-prd-externo-4:
-      ansible_host: 10.41.5.136
-    worker-prd-externo-5:
-      ansible_host: 10.41.5.137
-    worker-prd-externo-6:
-      ansible_host: 10.41.5.138
-    worker-prd-externo-7:
-      ansible_host: 10.41.5.139
-    worker-prd-externo-8:
-      ansible_host: 10.41.5.140
-opensearch:
-  hosts:
-    opensearch-dash-1:
-      ansible_host: 10.41.5.77
-    opensearch-dash-2:
-      ansible_host: 10.41.5.78 
-    opensearch-data-1:
-      ansible_host: 10.41.5.79
-    opensearch-data-2:  
-      ansible_host: 10.41.5.80
-    opensearch-data-3:  
-      ansible_host: 10.41.5.81      
-rabbitmq:
-  hosts:
-    rabbitmq-prd-1:
-      ansible_host: 10.41.5.171
-      rabbit_primary: true  
-    rabbitmq-prd-2:
-      ansible_host: 10.41.5.172
-    rabbitmq-prd-3:
-      ansible_host: 10.41.5.173
-    rabbitmq-gate-1:
-      ansible_host: 10.41.5.168
-      rabbit_primary: true  
-    rabbitmq-gate-2:
-      ansible_host: 10.41.5.169
-    rabbitmq-gate-3:
-      ansible_host: 10.41.5.170      
-redis:
-  hosts:
-    redis-prod-worker-1:
-      ansible_host: 10.41.5.43
-    redis-prod-worker-2:
-      ansible_host: 10.41.5.44
-    redis-prod-worker-3:
-      ansible_host: 10.41.5.45
-consul:
-  hosts:
-    consul-1:
-      ansible_host: 10.41.5.152
-    consul-2:
-      ansible_host: 10.41.5.153
-    consul-3:
-      ansible_host: 10.41.5.154
-mongodb:
-  hosts:
-    prd-ext-mongodb1:
-      ansible_host: 10.41.5.83
-    prd-ext-mongodb2:
-      ansible_host: 10.41.5.84
-    prd-ext-mongodb3:
-      ansible_host: 10.41.5.85
-    prd-ext-mongodb4:
-      ansible_host: 10.41.5.86
-    prd-ext-mongodb5:
-      ansible_host: 10.41.5.87
-    prd-cg-mongodb1:
-      ansible_host: 10.41.5.156
-    prd-cg-mongodb2:
-      ansible_host: 10.41.5.157
-    prd-cg-mongodb3:
-      ansible_host: 10.41.5.158      
+      ansible_host: 10.41.13.214
+    # worker-prd-2:
+    #   ansible_host: 10.41.5.34
+    # worker-prd-3:
+    #   ansible_host: 10.41.5.35
+    # worker-prd-4:
+    #   ansible_host: 10.41.5.36
+    # worker-prd-5:
+    #   ansible_host: 10.41.5.37
+    # worker-prd-6:
+    #   ansible_host: 10.41.5.38
+    # worker-prd-7:
+    #   ansible_host: 10.41.5.71
+    # worker-prd-8:
+    #   ansible_host: 10.41.5.73
+    # worker-prd-externo-1:
+    #   ansible_host: 10.41.5.133
+    # worker-prd-externo-2:
+    #   ansible_host: 10.41.5.134
+    # worker-prd-externo-3:
+    #   ansible_host: 10.41.5.135
+    # worker-prd-externo-4:
+    #   ansible_host: 10.41.5.136
+    # worker-prd-externo-5:
+    #   ansible_host: 10.41.5.137
+    # worker-prd-externo-6:
+    #   ansible_host: 10.41.5.138
+    # worker-prd-externo-7:
+    #   ansible_host: 10.41.5.139
+    # worker-prd-externo-8:
+    #   ansible_host: 10.41.5.140
+# opensearch:
+#   hosts:
+#     opensearch-dash-1:
+#       ansible_host: 10.41.5.77
+#     opensearch-dash-2:
+#       ansible_host: 10.41.5.78 
+#     opensearch-data-1:
+#       ansible_host: 10.41.5.79
+#     opensearch-data-2:  
+#       ansible_host: 10.41.5.80
+#     opensearch-data-3:  
+#       ansible_host: 10.41.5.81      
+# rabbitmq:
+#   hosts:
+#     rabbitmq-prd-1:
+#       ansible_host: 10.41.5.171
+#       rabbit_primary: true  
+#     rabbitmq-prd-2:
+#       ansible_host: 10.41.5.172
+#     rabbitmq-prd-3:
+#       ansible_host: 10.41.5.173
+#     rabbitmq-gate-1:
+#       ansible_host: 10.41.5.168
+#       rabbit_primary: true  
+#     rabbitmq-gate-2:
+#       ansible_host: 10.41.5.169
+#     rabbitmq-gate-3:
+#       ansible_host: 10.41.5.170      
+# redis:
+#   hosts:
+#     redis-prod-worker-1:
+#       ansible_host: 10.41.5.43
+#     redis-prod-worker-2:
+#       ansible_host: 10.41.5.44
+#     redis-prod-worker-3:
+#       ansible_host: 10.41.5.45
+# consul:
+#   hosts:
+#     consul-1:
+#       ansible_host: 10.41.5.152
+#     consul-2:
+#       ansible_host: 10.41.5.153
+#     consul-3:
+#       ansible_host: 10.41.5.154
+# mongodb:
+#   hosts:
+#     prd-ext-mongodb1:
+#       ansible_host: 10.41.5.83
+#     prd-ext-mongodb2:
+#       ansible_host: 10.41.5.84
+#     prd-ext-mongodb3:
+#       ansible_host: 10.41.5.85
+#     prd-ext-mongodb4:
+#       ansible_host: 10.41.5.86
+#     prd-ext-mongodb5:
+#       ansible_host: 10.41.5.87
+#     prd-cg-mongodb1:
+#       ansible_host: 10.41.5.156
+#     prd-cg-mongodb2:
+#       ansible_host: 10.41.5.157
+#     prd-cg-mongodb3:
+#       ansible_host: 10.41.5.158      
 kubernetes:
   children:
     master_k8s:
@@ -143,7 +143,7 @@ all:
   vars:
 # Variáveis globais
     ansible_user: infra
-    ansible_ssh_private_key_file: /home/francisco/.ssh/id_rsa
+    ansible_ssh_private_key_file: ~/.ssh/id_rsa
 #    ansible_ssh_pass: {{ QA-AnsiblePass }}
   children:
     kubernetes:

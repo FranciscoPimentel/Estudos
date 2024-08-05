@@ -1,5 +1,5 @@
 - hosts: '{{ nodes  }}' #controlplanes, workers,master_k8s
-  name: Playbook name 01-k8s_install.yml, ele instala o Kubernetes, Containerd, runc (runtime) e efetua as configurações.
+  name: Playbook add usuário 
   become: yes
   tasks:
 # 1 - Preparando o sistema operacional

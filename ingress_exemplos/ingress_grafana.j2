@@ -1,0 +1,17 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: prometheus-grafana
+  namespace: monitoring
+spec:
+  rules:
+  - host: {{ vars_domains.domain_grafana }}
+    http:
+      paths:
+      - pathType: Prefix
+        path: /
+        backend:
+          service:
+            name: prometheus-grafana
+            port:
+              number: 3000
