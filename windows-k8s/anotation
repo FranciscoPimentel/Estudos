@@ -1,0 +1,160 @@
+https://github.com/microsoft/Windows-Containers/issues/210
+https://github.com/containerd/containerd/blob/main/docs/getting-started.md
+https://github.com/kubernetes-sigs/sig-windows-tools/blob/master/guides/guide-for-adding-windows-node.md
+
+# If containerd previously installed run:
+Stop-Service containerd
+
+# Download and extract desired containerd Windows binaries
+$Version="1.7.13"	# update to your preferred version
+$Arch = "amd64"	# arm64 also available
+curl.exe -LO https://github.com/containerd/containerd/releases/download/v$Version/containerd-$Version-windows-$Arch.tar.gz
+tar.exe xvf .\containerd-$Version-windows-amd64.tar.gz
+
+# Copy
+Copy-Item -Path .\bin -Destination $Env:ProgramFiles\containerd -Recurse -Force
+
+# add the binaries (containerd.exe, ctr.exe) in $env:Path
+$Path = [Environment]::GetEnvironmentVariable("PATH", "Machine") + [IO.Path]::PathSeparator + "$Env:ProgramFiles\containerd"
+[Environment]::SetEnvironmentVariable( "Path", $Path, "Machine")
+# reload path, so you don't have to open a new PS terminal later if needed
+$Env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User")
+
+# configure
+containerd.exe config default | Out-File $Env:ProgramFiles\containerd\config.toml -Encoding ascii
+# Review the configuration. Depending on setup you may want to adjust:
+# - the sandbox_image (Kubernetes pause image)
+# - cni bin_dir and conf_dir locations
+Get-Content $Env:ProgramFiles\containerd\config.toml
+
+# Register and start service
+containerd.exe --register-service
+Start-Service containerd
+
+Invoke-WebRequest -UseBasicParsing "https://raw.githubusercontent.com/microsoft/Windows-Containers/Main/helpful_tools/Install-ContainerdRuntime/install-containerd-runtime.ps1" -o install-containerd-runtime.ps1
+.\install-containerd-runtime.ps1
+
+---
+ERROS:
+PS C:\Users\Administrator\Documents\kubernetes> .\kubeadm.exe join 10.41.13.86:6443 --token 53aob7.rc1930gulbcts8pe --discovery-token-ca-cert-hash sha256:b1e43347c09e3a219cc8f49b916debb97a7bb9f7b1be9e2911efff407b8e0fa8
+[preflight] Running pre-flight checks
+W0805 11:19:13.452724    8416 checks.go:1079] [preflight] WARNING: Couldn't create the interface used for talking to the container runtime: crictl is required by the container runtime: executable file not found in %PATH%
+        [WARNING Service-Kubelet]: kubelet service does not exist
+PS C:\Users\Administrator\Documents\kubernetes> .\kubelet.exe
+E0805 11:20:19.143849    3716 run.go:74] "command failed" err="failed to validate kubelet configuration, error: [invalid configuration: CgroupsPerQOS (--cgroups-per-qos) true is not supported on Windows, invalid configuration: EnforceNodeAllocatable (--enforce-node-allocatable) [pods] is not supported on Windows], path: &TypeMeta{Kind:,APIVersion:,}"
+PS C:\Users\Administrator\Documents\kubernetes> ^C
+---
+
+Install CRICTL 
+curl.exe -LO https://github.com/kubernetes-sigs/cri-tools/releases/download/v1.23.0/crictl-v1.23.0-windows-amd64.tar.gz
+tar xvf crictl-v1.23.0-windows-amd64.tar.gz
+mv crictl.exe "C:\Program Files\containerd"
+
+ Install-WindowsFeature Containers,Hyper-V,Hyper-V-Tools,Hyper-V-PowerShell -Restart -IncludeManagementTools
+
+Enable-WindowsOptionalFeature -Online -FeatureName Microsoft-Hyper-V -All
+Enable-WindowsOptionalFeature -Online -FeatureName Containers -All
+Enable-WindowsOptionalFeature -Online -FeatureName Hyper-V -All
+Enable-WindowsOptionalFeature -Online -FeatureName Hyper-V-Tools -All
+Enable-WindowsOptionalFeature -Online -FeatureName Hyper-V-PowerShell  -All
+
+
+
+E0805 11:39:28.595881    1468 run.go:74] "command failed" err="failed to validate kubelet configuration, error: [invalid configuration: CgroupsPerQOS (--cgroups-per-qos) true is not supported on Windows, invalid configuration: EnforceNodeAllocatable (--enforce-node-allocatable) [pods] is not supported on Windows], path: &TypeMeta{Kind:,APIVersion:,}"
+
+
+PS C:\k> .\kubelet.exe
+E0805 14:02:50.226385    3760 run.go:74] "command failed" err="failed to validate kubelet configuration, error: [invalid configuration: CgroupsPerQOS (--cgroups-per-qos) true is not supported on Windows, invalid configuration: EnforceNodeAllocatable (--enforce-node-allocatable) [pods] is not supported on Windows], path: &TypeMeta{Kind:,APIVersion:,}"
+PS C:\k> .\kubelet.exe version
+
+
+
+
+kubeadm join 192.168.x.x:6443 --token TOKEN --discovery-token-ca-cert-hash sha256:HASH --cri-socket="npipe:////./pipe/containerd-containerd"
+
+
+
+# Install the Hyper-V hypervisor and all tools (method #1)
+Install-WindowsFeature -Name Hyper-V -IncludeManagementTools
+
+# Install the Hyper-V hypervisor and all tools (method #2)
+Install-WindowsFeature -Name Hyper-V, RSAT-Hyper-V-Tools
+
+Enable-WindowsOptionalFeature -Online -FeatureName Microsoft-Hyper-V -All
+
+
+
+
+
+
++++++++++++
+
+
+
+
+
+# If containerd previously installed run:
+Stop-Service containerd
+
+# Download and extract desired containerd Windows binaries
+$Version="1.7.13"	# update to your preferred version
+$Arch = "amd64"	# arm64 also available
+curl.exe -LO https://github.com/containerd/containerd/releases/download/v$Version/containerd-$Version-windows-$Arch.tar.gz
+tar.exe xvf .\containerd-$Version-windows-amd64.tar.gz
+
+# Copy
+Copy-Item -Path .\bin -Destination $Env:ProgramFiles\containerd -Recurse -Force
+
+# add the binaries (containerd.exe, ctr.exe) in $env:Path
+$Path = [Environment]::GetEnvironmentVariable("PATH", "Machine") + [IO.Path]::PathSeparator + "$Env:ProgramFiles\containerd"
+[Environment]::SetEnvironmentVariable( "Path", $Path, "Machine")
+# reload path, so you don't have to open a new PS terminal later if needed
+$Env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User")
+
+# configure
+containerd.exe config default | Out-File $Env:ProgramFiles\containerd\config.toml -Encoding ascii
+# Review the configuration. Depending on setup you may want to adjust:
+# - the sandbox_image (Kubernetes pause image)
+# - cni bin_dir and conf_dir locations
+Get-Content $Env:ProgramFiles\containerd\config.toml
+
+# Register and start service
+containerd.exe --register-service
+Start-Service containerd
+
+
+
+
+
+
+
+
+
+
+controlPlaneEndpoint=$(kubectl get configmap -n kube-system kube-proxy -o jsonpath="{.data['kubeconfig\.conf']}" | grep server: | sed 's/.*\:\/\///g')
+kubernetesServiceHost=$(echo $controlPlaneEndpoint | cut -d ":" -f 1)
+kubernetesServicePort=$(echo $controlPlaneEndpoint | cut -d ":" -f 2)
+curl -L https://raw.githubusercontent.com/kubernetes-sigs/sig-windows-tools/master/hostprocess/flannel/flanneld/flannel-overlay.yml | sed 's/FLANNEL_VERSION/v0.21.5/g' | sed "s/KUBERNETES_SERVICE_HOST_VALUE/$kubernetesServiceHost/g" | sed "s/KUBERNETES_SERVICE_PORT_VALUE/$kubernetesServicePort/g" | kubectl apply -f -
+
+
+
+kubeadm join 10.41.13.86:6443 --token tag7lq.qbel9nqt34f1rj7k --discovery-token-ca-cert-hash sha256:b1e43347c09e3a219cc8f49b916debb97a7bb9f7b1be9e2911efff407b8e0fa8 --cri-socket "npipe:////./pipe/containerd-containerd" 
+
+
+
+curl.exe -LO https://raw.githubusercontent.com/kubernetes-sigs/sig-windows-tools/master/hostprocess/PrepareNode.ps1
+.\PrepareNode.ps1 -KubernetesVersion v1.29.6
+
+
+
+1069 - 10.41.13.153
+1072 - 10.41.13.154
+
+C:\var\log\kubelet
+
+E0805 17:55:34.631927    4432 cri_stats_provider_windows.go:55] "Failed to fetch current HNS endpoints" err="failed during hnsCallRawResponse: hnsCall failed in Win32: The specified module could not be found. (0x7e)"
+E0805 17:55:34.632453    4432 eviction_manager.go:262] "Eviction manager: failed to get summary stats" err="failed to list pod stats: failed to list container network stats: failed during hnsCallRawResponse: hnsCall failed in Win32: The specified module could not be found. (0x7e)"
+E0805 17:55:35.102060    4432 kubelet.go:2760] "Container runtime network not ready" networkReady="NetworkReady=false reason:NetworkPluginNotReady message:Network plugin returns error: cni plugin not initialized"
+
+
+Failed to create pod sandbox: rpc error: code = Unknown desc = failed to get sandbox image "registry.k8s.io/pause:3.8": failed to pull image "registry.k8s.io/pause:3.8": failed to pull and unpack image "registry.k8s.io/pause:3.8": failed to extract layer sha256:26085ddda8400952278f21eda4de3abb08e6e2b02afaddd77d1dab2b2a3f7c70: hcsshim::ProcessBaseLayer \\?\C:\ProgramData\containerd\root\io.containerd.snapshotter.v1.windows\snapshots\1: The specified module could not be found.: unknown
