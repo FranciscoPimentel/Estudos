@@ -1,0 +1,10 @@
+version: '3.9'
+
+services:
+  burrito:
+    build:
+      context: .
+      args:
+        CONFIG_FILE: ./examples/burrito.yaml
+    ports:
+      - "3000:3000"
